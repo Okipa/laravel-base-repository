@@ -67,7 +67,7 @@ trait ConfigChecksTrait
             );
         }
         // we check if the config json storage instruction is a boolean value
-        if (!is_bool($this->configKey . '.json_storage')) {
+        if (!is_bool(config($this->configKey . '.json_storage'))) {
             throw new ErrorException(
                 get_class($this) . ' : the config "' . $this->configKey 
                 . '.json_storage" instruction is not a boolean value.'
