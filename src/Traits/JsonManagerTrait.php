@@ -7,6 +7,13 @@ use Log;
 trait JsonManagerTrait
 {
     /**
+     * The repository json content
+     *
+     * @var array
+     */
+    protected $jsonContent;
+    
+    /**
      * Load the repository json content
      */
     protected function loadJsonContent()

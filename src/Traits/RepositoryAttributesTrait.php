@@ -4,8 +4,39 @@ namespace Okipa\LaravelCleverBaseRepository\Traits;
 
 use ErrorException;
 
-trait ConfigChecksTrait
+trait RepositoryAttributesTrait
 {
+    /**
+     * The repository file types
+     *
+     * @var array
+     */
+    protected $fileTypes;
+    /**
+     * The repository config key
+     *
+     * @var string
+     */
+    protected $configKey;
+    /**
+     * The attribute are stored in a json file and not in database
+     *
+     * @var bool
+     */
+    protected $jsonStorage;
+    /**
+     * The place in the storage directory where the elements will be stored
+     *
+     * @var string
+     */
+    protected $storagePath;
+    /**
+     * The place in the public directory where the elements will be stored
+     *
+     * @var string
+     */
+    protected $publicPath;
+    
     /**
      * Check that the repository model has been loaded from database
      *
@@ -24,18 +55,20 @@ trait ConfigChecksTrait
     /**
      * Check that the repository config has been correctly set
      */
-    protected function checkRepositoryConfig()
+    protected function setRepositoryAttributesFromConfig()
     {
-        // we check that the config exists
+        // we check that a config key is given
         if ($this->checkConfigExists()) {
+            // we check the configuration file types
+            $this->setRepositoryFileTypes();
             // we check the configuration json storage instruction
-            $this->checkConfigurationJsonStorage();
+            $this->setRepositoryJsonStorage();
             // we check the configuration storage path
-            $this->checkConfigurationStoragePath();
+            $this->setRepositoryStoragePath();
             // we check the configuration public path
-            $this->checkConfigurationPublicPath();
+            $this->setRepositoryPublicPath();
             // we check the configurations validity
-            $this->checkConfigurationsValidity();
+            $this->checkFilesConfigurationsValidity();
         }
     }
 
@@ -58,7 +91,7 @@ trait ConfigChecksTrait
     /**
      * @throws \ErrorException
      */
-    protected function checkConfigurationJsonStorage()
+    protected function setRepositoryJsonStorage()
     {
         // we check if the config json storage instruction is defined
         if (!config($this->configKey . '.json_storage')) {
@@ -69,16 +102,18 @@ trait ConfigChecksTrait
         // we check if the config json storage instruction is a boolean value
         if (!is_bool(config($this->configKey . '.json_storage'))) {
             throw new ErrorException(
-                get_class($this) . ' : the config "' . $this->configKey 
+                get_class($this) . ' : the config "' . $this->configKey
                 . '.json_storage" instruction is not a boolean value.'
             );
         }
+        // we set the json storage attribute
+        $this->jsonStorage = config($this->configKey . '.json_storage');
     }
 
     /**
      * @throws \ErrorException
      */
-    protected function checkConfigurationStoragePath()
+    protected function setRepositoryStoragePath()
     {
         // we check if the config storage path is defined
         if (!config($this->configKey . '.storage_path')) {
@@ -86,12 +121,14 @@ trait ConfigChecksTrait
                 get_class($this) . ' : the config "' . $this->configKey . '" has no defined "storage_path" value.'
             );
         }
+        // we set the storage path attribute
+        $this->storagePath = config($this->configKey . '.storage_path');
     }
 
     /**
      * @throws \ErrorException
      */
-    protected function checkConfigurationPublicPath()
+    protected function setRepositoryPublicPath()
     {
         // we check if the config public path is defined
         if (!config($this->configKey . '.public_path')) {
@@ -99,6 +136,8 @@ trait ConfigChecksTrait
                 get_class($this) . ' : the config "' . $this->configKey . '" has no defined public_path" value.'
             );
         }
+        // wet set the public path attribute
+        $this->publicPath = config($this->configKey . '.public_path');
     }
 
     /**
@@ -106,20 +145,20 @@ trait ConfigChecksTrait
      *
      * @return void
      */
-    protected function checkConfigurationsValidity()
+    protected function checkFilesConfigurationsValidity()
     {
         // we get the repository file types
-        $cfgTypes = array_filter(config($this->configKey), function($key) {
+        $cfgFileTypes = array_filter(config($this->configKey), function($key) {
             return in_array($key, $this->fileTypes);
         }, ARRAY_FILTER_USE_KEY);
         // we check each file type config
-        foreach ($cfgTypes as $cfgTypeKey => $cfgTypeContent) {
-            foreach ($cfgTypeContent as $cfgTypeContentKey => $cfgTypeContentValues) {
-                $cfgPath = $this->configKey . '.' . $cfgTypeKey . '.' . $cfgTypeContentKey;
-                $this->checkConfigurationName($cfgTypeContentValues, $cfgPath);
-                $this->checkConfigurationAuthorizedExtensions($cfgTypeContentValues, $cfgPath);
-                if ($cfgTypeKey === 'image') {
-                    $this->checkImageConfigurationAvailableSizes($cfgTypeContentValues, $cfgPath);
+        foreach ($cfgFileTypes as $cfgFileTypeKey => $cfgFileTypeContent) {
+            foreach ($cfgFileTypeContent as $cfgFileTypeContentKey => $cfgFileTypeContentValues) {
+                $cfgPath = $this->configKey . '.' . $cfgFileTypeKey . '.' . $cfgFileTypeContentKey;
+                $this->checkConfigurationName($cfgFileTypeContentValues, $cfgPath);
+                $this->checkConfigurationAuthorizedExtensions($cfgFileTypeContentValues, $cfgPath);
+                if ($cfgFileTypeKey === 'image') {
+                    $this->checkImageConfigurationAvailableSizes($cfgFileTypeContentValues, $cfgPath);
                 }
             }
         }
@@ -222,12 +261,14 @@ trait ConfigChecksTrait
     /**
      * @throws \ErrorException
      */
-    protected function checkConfigFileTypes()
+    protected function setRepositoryFileTypes()
     {
-        if (empty(config($this->configKey . '.file_types')) && !is_array(config($this->configKey . '.file_types'))) {
+        if (empty(config('repository.file_types')) && !is_array(config('repository.file_types'))) {
             throw new ErrorException(
                 get_class($this) . ' : the "repository" config has no defined "file_types" array.'
             );
         }
+        // we set the file types attribute
+        $this->fileTypes = config('repository.file_types');
     }
 }

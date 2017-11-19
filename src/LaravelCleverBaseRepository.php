@@ -7,76 +7,27 @@ use Illuminate\Http\Request;
 use Okipa\LaravelCleverBaseRepository\Traits\EloquentOverlayTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\ImageManagerTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\JsonManagerTrait;
-use Okipa\LaravelCleverBaseRepository\Traits\ConfigChecksTrait;
+use Okipa\LaravelCleverBaseRepository\Traits\RepositoryAttributesTrait;
 
 class LaravelCleverBaseRepository
 {
-    use ConfigChecksTrait;
+    use RepositoryAttributesTrait;
     use EloquentOverlayTrait;
     use ImageManagerTrait;
     use JsonManagerTrait;
 
     /**
-     * The repository file types
-     *
-     * @var array
-     */
-    protected $fileTypes;
-    /**
-     * The repository config key
-     *
-     * @var string
-     */
-    protected $configKey;
-    /**
-     * The attribute are stored in a json file and not in database
-     *
-     * @var bool
-     */
-    protected $jsonStorage;
-    /**
-     * The repository json content
-     *
-     * @var array
-     */
-    protected $jsonContent;
-    /**
-     * The place in the storage directory where the elements will be stored
-     *
-     * @var string
-     */
-    protected $storagePath;
-    /**
-     * The place in the public directory where the elements will be stored
-     *
-     * @var string
-     */
-    protected $publicPath;
-    
-    /**
      * BaseRepository constructor.
      */
     public function __construct()
     {
-        // we override the config key
+        // we set the config key
         $this->configKey = $this->configKey ? 'repository.' . $this->configKey : null;
         // we check the repository config
-        $this->checkRepositoryConfig();
-        // we set the repository attributes
-        $this->jsonStorage = config($this->configKey . '.json_storage');
-        $this->storagePath = config($this->configKey . '.storage_path');
-        $this->publicPath = config($this->configKey . '.public_path');
+        $this->setRepositoryAttributesFromConfig();
         // we set the repository model
         if ($this->model && !$this->model instanceof Model) {
             $this->model = app($this->model);
-        }
-    }
-
-    protected function getDefaultRequestExceptEntries()
-    {
-        $defaultRequestEnties = ['_token', '_method'];
-        foreach ($this->getAvailableImageKeys() as $imageKey) {
-            $defaultRequestEnties[] = 'remove_' . $imageKey;
         }
     }
 
@@ -125,14 +76,20 @@ class LaravelCleverBaseRepository
             $removeImageOrder = 'remove_' . $imageKey;
         }
     }
-    
+
+    protected function getDefaultRequestExceptEntries()
+    {
+        $defaultRequestEnties = ['_token', '_method'];
+        foreach ($this->getAvailableImageKeys() as $imageKey) {
+            $defaultRequestEnties[] = 'remove_' . $imageKey;
+        }
+    }
+
     public function updateEntity(Request $request, array $except = [])
     {
-        
     }
-    
+
     public function destroyEntity(Request $request)
     {
-        
     }
 }
