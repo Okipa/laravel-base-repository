@@ -9,7 +9,7 @@ use Okipa\LaravelCleverBaseRepository\Traits\ImageManagerTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\JsonManagerTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\SecurityChecksTrait;
 
-class BaseRepository
+class CleverBaseRepository
 {
     use SecurityChecksTrait;
     use EloquentOverlayTrait;
