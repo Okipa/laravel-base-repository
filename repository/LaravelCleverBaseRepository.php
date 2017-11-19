@@ -1,6 +1,6 @@
 <?php
 
-namespace Okipa\LaravelCleverBaseRepository;
+namespace Okipa\Repository\LaravelCleverBaseRepository;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
