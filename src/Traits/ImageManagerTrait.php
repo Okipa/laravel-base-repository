@@ -3,8 +3,10 @@
 namespace Okipa\LaravelCleverBaseRepository\Traits;
 
 use Illuminate\Http\UploadedFile;
+use Image;
 use InvalidArgumentException;
 use Spatie\ImageOptimizer\OptimizerChain;
+use File;
 
 trait ImageManagerTrait
 {
@@ -146,6 +148,7 @@ trait ImageManagerTrait
 
     /**
      * Store the given uploaded image, according to the configuration available sizes
+     * Once the image is stored, its name is automatically updated in the model or in the json
      *
      * @param string                             $imageKey
      * @param \Illuminate\Http\UploadedFile|null $uploadedImage
@@ -182,12 +185,13 @@ trait ImageManagerTrait
             );
         }
         // we save the image name
-        if ($this->checkModelDatabaseInstance(false)) {
-            $this->model->update([
+        if ($this->jsonStorage) {
+            $this->storeAttributesToJson([
                 $imageKey => $generatedImageName,
             ]);
         } else {
-            $this->storeAttributesToJson([
+            $this->checkModelDatabaseInstance();
+            $this->model->update([
                 $imageKey => $generatedImageName,
             ]);
         }

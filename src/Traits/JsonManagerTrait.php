@@ -12,37 +12,6 @@ trait JsonManagerTrait
      * @var array
      */
     protected $jsonContent;
-    
-    /**
-     * Load the repository json content
-     */
-    protected function loadJsonContent()
-    {
-        if (is_file($this->getStoragePath('attributes.json'))) {
-            $this->jsonContent = json_decode(file_get_contents($this->getStoragePath('attributes.json')), true);
-        } else {
-            $this->jsonContent = [];
-            Log::info('The file "' . $this->getStoragePath('attributes.json') . '" does not exist.');
-        }
-    }
-
-    /**
-     * Get the raw attributes from the repository json file
-     *
-     * @param bool $forceRefresh
-     *
-     * @return array
-     * @internal param $void
-     */
-    public function getAttributesFromJson(bool $forceRefresh = false)
-    {
-        if (!$this->jsonContent || $forceRefresh) {
-            // we load the json content
-            $this->loadJsonContent();
-        }
-
-        return $this->jsonContent;
-    }
 
     /**
      * Get the given attribute (translated or not) value from the repository json file
@@ -71,7 +40,38 @@ trait JsonManagerTrait
 
         return $attribute;
     }
-    
+
+    /**
+     * Get the raw attributes from the repository json file
+     *
+     * @param bool $forceRefresh
+     *
+     * @return array
+     * @internal param $void
+     */
+    public function getAttributesFromJson(bool $forceRefresh = false)
+    {
+        if (!$this->jsonContent || $forceRefresh) {
+            // we load the json content
+            $this->loadJsonContent();
+        }
+
+        return $this->jsonContent;
+    }
+
+    /**
+     * Load the repository json content
+     */
+    protected function loadJsonContent()
+    {
+        if (is_file($this->getStoragePath('attributes.json'))) {
+            $this->jsonContent = json_decode(file_get_contents($this->getStoragePath('attributes.json')), true);
+        } else {
+            $this->jsonContent = [];
+            Log::info('The file "' . $this->getStoragePath('attributes.json') . '" does not exist.');
+        }
+    }
+
     /**
      * Store the given attributes to the repository json file
      *

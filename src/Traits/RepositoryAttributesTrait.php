@@ -36,7 +36,7 @@ trait RepositoryAttributesTrait
      * @var string
      */
     protected $publicPath;
-    
+
     /**
      * Check that the repository model has been loaded from database
      *
@@ -86,6 +86,20 @@ trait RepositoryAttributesTrait
         }
 
         return $definedConfigKey;
+    }
+
+    /**
+     * @throws \ErrorException
+     */
+    protected function setRepositoryFileTypes()
+    {
+        if (empty(config('repository.file_types')) && !is_array(config('repository.file_types'))) {
+            throw new ErrorException(
+                get_class($this) . ' : the "repository" config has no defined "file_types" array.'
+            );
+        }
+        // we set the file types attribute
+        $this->fileTypes = config('repository.file_types');
     }
 
     /**
@@ -256,19 +270,5 @@ trait RepositoryAttributesTrait
                 );
             }
         }
-    }
-
-    /**
-     * @throws \ErrorException
-     */
-    protected function setRepositoryFileTypes()
-    {
-        if (empty(config('repository.file_types')) && !is_array(config('repository.file_types'))) {
-            throw new ErrorException(
-                get_class($this) . ' : the "repository" config has no defined "file_types" array.'
-            );
-        }
-        // we set the file types attribute
-        $this->fileTypes = config('repository.file_types');
     }
 }
