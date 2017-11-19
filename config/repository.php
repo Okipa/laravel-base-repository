@@ -2,12 +2,13 @@
 
 return [
     // repository file types
-    'file_types' => [
+    'file_types'         => [
         'images',
         'files',
     ],
+    'image_optimization' => true,
     // users configuration
-    'users'      => [
+    'users'              => [
         'images'       => [
             'photo' => [
                 'name'                  => 'user-photo',

@@ -4,6 +4,7 @@ namespace Okipa\LaravelCleverBaseRepository\Traits;
 
 use Illuminate\Http\UploadedFile;
 use InvalidArgumentException;
+use Spatie\ImageOptimizer\OptimizerChain;
 
 trait ImageManagerTrait
 {
@@ -335,8 +336,8 @@ trait ImageManagerTrait
             // we store the resized image
             $originalImgInstance->save($resizedImgPath);
             // we optimize the resized image
-            if (config('settings.image_optimization')) {
-                app(ImageOptimizer::class)->optimizeImage($resizedImgPath);
+            if (config('repository.image_optimization')) {
+                app(OptimizerChain::class)->optimizeImage($resizedImgPath);
             }
         }
     }

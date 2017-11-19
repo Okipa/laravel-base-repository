@@ -1,6 +1,6 @@
 <?php
 
-namespace Okipa\Repository\LaravelCleverBaseRepository;
+namespace Okipa\LaravelCleverBaseRepository;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -9,7 +9,7 @@ use Okipa\LaravelCleverBaseRepository\Traits\ImageManagerTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\JsonManagerTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\ConfigChecksTrait;
 
-class CleverBaseRepository
+class LaravelCleverBaseRepository
 {
     use ConfigChecksTrait;
     use EloquentOverlayTrait;
