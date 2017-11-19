@@ -35,9 +35,7 @@ class LaravelCleverBaseRepositoryServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/repository.php', 'repository');
         $this->app->singleton('Okipa\LaravelCleverBaseRepository', function(Application $app) {
-            $laravelCleverBaseRepository = $app->make(LaravelCleverBaseRepository::class);
-
-            return $laravelCleverBaseRepository;
+            return $app->make(LaravelCleverBaseRepository::class);
         });
         // we load the intervention image package
         // https://github.com/Intervention/image
