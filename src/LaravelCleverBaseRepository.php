@@ -60,16 +60,16 @@ class LaravelCleverBaseRepository
     }
 
     /**
-     * Automatically create the entity and store its related images, according to the request data and the repository
+     * Automatically save the entity attributes and its related images from the request and according to the repository
      * configuration.
      *
      * @param \Illuminate\Http\Request $request
      * @param array                    $except       The request keys that will not be stored
      * @param array                    $customValues The key / values couples that will override the request data
      *
-     * @return bool|\Illuminate\Database\Eloquent\Model|\Illuminate\Foundation\Application|mixed
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Foundation\Application|\Illuminate\Support\Collection|mixed
      */
-    public function createEntity(Request $request, array $except = [], array $customValues = [])
+    public function saveEntityFromRequest(Request $request, array $except = [], array $customValues = [])
     {
         // we get the attributes from the request
         $attributes = $request->except(array_merge($except, $this->getDefaultRequestExceptEntries()));
@@ -79,14 +79,14 @@ class LaravelCleverBaseRepository
         if ($this->jsonStorage) {
             $this->storeAttributesToJson($attributes);
         } else {
-            $this->model = $this->create($attributes);
+            $this->model = $this->model->id ? $this->updateById($this->model, $attributes) : $this->create($attributes);
         }
         // we store the images
         foreach ($this->getAvailableImageKeys() as $imageKey) {
             $this->storeImageFromUploadedFile($imageKey, $request->file($imageKey), $request->{'remove_' . $imageKey});
         }
 
-        return $this->jsonStorage ? true : $this->model;
+        return $this->jsonStorage ? collect($this->getAttributesFromJson(true)) : $this->model;
     }
 
     /**
@@ -105,11 +105,22 @@ class LaravelCleverBaseRepository
         return $defaultRequestEntries;
     }
 
-    public function updateEntity(Request $request, array $except = [])
+    /**
+     * Destroy the current model entity and all its related images defined in the repository configuration
+     *
+     * @return void
+     */
+    public function destroyEntity()
     {
-    }
-
-    public function destroyEntity(Request $request)
-    {
+        // we check that the current repository model is loaded from database
+        $this->checkModelDatabaseInstance();
+        // we destroy the entity images
+        foreach ($this->getAvailableImageKeys() as $imageKey) {
+            if ($imageName = $this->model->{$imageKey}) {
+                $this->destroyImage($imageKey, $imageName);
+            }
+        }
+        // we destroy the entity
+        $this->model->delete();
     }
 }

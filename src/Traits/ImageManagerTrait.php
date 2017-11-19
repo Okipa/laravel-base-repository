@@ -190,6 +190,7 @@ trait ImageManagerTrait
                 $imageKey => $generatedImageName,
             ]);
         } else {
+            // we check that the current repository model is loaded from database
             $this->checkModelDatabaseInstance();
             $this->model->update([
                 $imageKey => $generatedImageName,
