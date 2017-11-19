@@ -34,7 +34,7 @@ class LaravelCleverBaseRepository
     /**
      * Get the repository storage path
      *
-     * @param string|null $path
+     * @param string|null $path The path we want to add after the returned storage path
      *
      * @return string
      */
@@ -46,8 +46,8 @@ class LaravelCleverBaseRepository
     /**
      * Get the repository public path
      *
-     * @param string|null $path
-     * @param bool        $absolute
+     * @param string|null $path     The path we want to add after the returned public path
+     * @param bool        $absolute Whether we want the returned path to be absolute
      *
      * @return string
      * @throws \ErrorException
@@ -61,11 +61,11 @@ class LaravelCleverBaseRepository
 
     /**
      * Automatically create the entity and store its related images, according to the request data and the repository
-     * configuration
+     * configuration.
      *
      * @param \Illuminate\Http\Request $request
-     * @param array                    $except
-     * @param array                    $customValues
+     * @param array                    $except       The request keys that will not be stored
+     * @param array                    $customValues The key / values couples that will override the request data
      *
      * @return bool|\Illuminate\Database\Eloquent\Model|\Illuminate\Foundation\Application|mixed
      */
@@ -92,17 +92,17 @@ class LaravelCleverBaseRepository
     /**
      * Get the default request entries to except from the request
      *
-     * @return array
+     * @return array $defaultRequestEntries
      */
     protected function getDefaultRequestExceptEntries()
     {
-        $defaultRequestEnties = ['_token', '_method'];
+        $defaultRequestEntries = ['_token', '_method'];
         foreach ($this->getAvailableImageKeys() as $imageKey) {
-            $defaultRequestEnties[] = $imageKey;
-            $defaultRequestEnties[] = 'remove_' . $imageKey;
+            $defaultRequestEntries[] = $imageKey;
+            $defaultRequestEntries[] = 'remove_' . $imageKey;
         }
 
-        return $defaultRequestEnties;
+        return $defaultRequestEntries;
     }
 
     public function updateEntity(Request $request, array $except = [])
