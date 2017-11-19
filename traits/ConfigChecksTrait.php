@@ -4,7 +4,7 @@ namespace Okipa\LaravelCleverBaseRepository\Traits;
 
 use ErrorException;
 
-trait SecurityChecksTrait
+trait ConfigChecksTrait
 {
     /**
      * Check that the repository model has been loaded from database

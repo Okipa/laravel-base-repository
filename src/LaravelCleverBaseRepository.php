@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Okipa\LaravelCleverBaseRepository\Traits\EloquentOverlayTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\ImageManagerTrait;
 use Okipa\LaravelCleverBaseRepository\Traits\JsonManagerTrait;
-use Okipa\LaravelCleverBaseRepository\Traits\SecurityChecksTrait;
+use Okipa\LaravelCleverBaseRepository\Traits\ConfigChecksTrait;
 
 class CleverBaseRepository
 {
-    use SecurityChecksTrait;
+    use ConfigChecksTrait;
     use EloquentOverlayTrait;
     use ImageManagerTrait;
     use JsonManagerTrait;
