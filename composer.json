@@ -1,0 +1,33 @@
+{
+    "name": "okipa/laravel-clever-base-repository",
+    "description": "",
+    "keywords": [
+        "okipa",
+        "php",
+        "laravel",
+        "clever",
+        "base",
+        "repository"
+    ],
+    "homepage": "https://github.com/Okipa/laravel-clever-base-repository",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arthur LORENT",
+            "email": "arthur.lorent@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "laravel/framework": "~5.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Okipa\\LaravelCleverBaseRepository\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
