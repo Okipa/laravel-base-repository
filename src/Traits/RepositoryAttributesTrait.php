@@ -94,7 +94,7 @@ trait RepositoryAttributesTrait
     protected function setRepositoryJsonStorage()
     {
         // we check if the config json storage instruction is defined
-        if (!config($this->configKey . '.json_storage')) {
+        if (is_null(config($this->configKey . '.json_storage'))) {
             throw new ErrorException(
                 get_class($this) . ' : the config "' . $this->configKey . '" has no defined "json_storage" instruction.'
             );
