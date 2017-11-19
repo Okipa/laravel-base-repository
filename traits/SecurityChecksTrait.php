@@ -13,7 +13,7 @@ trait SecurityChecksTrait
      */
     protected function checkModelDatabaseInstance()
     {
-        if (!$this->model->id) {
+        if (!$this->model || !$this->model->id) {
             throw new ErrorException(get_class($this) . ' : the repository related model "'
                                      . $this->model->getMorphClass() . '" has not been loaded from database. '
                                      . 'Please set a database loaded instance to the repository '
