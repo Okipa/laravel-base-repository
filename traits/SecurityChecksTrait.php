@@ -2,6 +2,8 @@
 
 namespace Okipa\LaravelCleverBaseRepository\Traits;
 
+use ErrorException;
+
 trait SecurityChecksTrait
 {
     /**
@@ -9,7 +11,7 @@ trait SecurityChecksTrait
      *
      * @throws \ErrorException 514
      */
-    private function checkModelDatabaseInstance()
+    protected function checkModelDatabaseInstance()
     {
         if (!$this->model->id) {
             throw new ErrorException(get_class($this) . ' : the repository related model "'
@@ -22,7 +24,7 @@ trait SecurityChecksTrait
     /**
      * Check that the repository config has been correctly set
      */
-    private function checkRepositoryConfig()
+    protected function checkRepositoryConfig()
     {
         // we check that the config exists
         if ($this->checkConfigExists()) {
@@ -41,7 +43,7 @@ trait SecurityChecksTrait
      * @return bool
      * @throws \ErrorException
      */
-    private function checkConfigExists()
+    protected function checkConfigExists()
     {
         $definedConfigKey = !!$this->configKey;
         if ($definedConfigKey && is_null(config($this->configKey))) {
@@ -56,7 +58,7 @@ trait SecurityChecksTrait
     /**
      * @throws \ErrorException
      */
-    private function checkConfigurationJsonStorage()
+    protected function checkConfigurationJsonStorage()
     {
         // we check if the config json storage instruction is defined
         if (!config($this->configKey . '.json_storage')) {
@@ -76,7 +78,7 @@ trait SecurityChecksTrait
     /**
      * @throws \ErrorException
      */
-    private function checkConfigurationStoragePath()
+    protected function checkConfigurationStoragePath()
     {
         // we check if the config storage path is defined
         if (!config($this->configKey . '.storage_path')) {
@@ -89,7 +91,7 @@ trait SecurityChecksTrait
     /**
      * @throws \ErrorException
      */
-    private function checkConfigurationPublicPath()
+    protected function checkConfigurationPublicPath()
     {
         // we check if the config public path is defined
         if (!config($this->configKey . '.public_path')) {
@@ -104,13 +106,13 @@ trait SecurityChecksTrait
      *
      * @return void
      */
-    private function checkConfigurationsValidity()
+    protected function checkConfigurationsValidity()
     {
-        // we get the config types
+        // we get the repository file types
         $cfgTypes = array_filter(config($this->configKey), function($key) {
-            return in_array($key, $this->configTypes);
+            return in_array($key, $this->fileTypes);
         }, ARRAY_FILTER_USE_KEY);
-        // we check each type config
+        // we check each file type config
         foreach ($cfgTypes as $cfgTypeKey => $cfgTypeContent) {
             foreach ($cfgTypeContent as $cfgTypeContentKey => $cfgTypeContentValues) {
                 $cfgPath = $this->configKey . '.' . $cfgTypeKey . '.' . $cfgTypeContentKey;
@@ -129,7 +131,7 @@ trait SecurityChecksTrait
      *
      * @throws \ErrorException
      */
-    private function checkConfigurationName(array $configuration, string $configPath)
+    protected function checkConfigurationName(array $configuration, string $configPath)
     {
         if (empty($configuration['name'])) {
             throw new ErrorException(
@@ -144,7 +146,7 @@ trait SecurityChecksTrait
      *
      * @throws \ErrorException
      */
-    private function checkConfigurationAuthorizedExtensions(array $configuration, string $configPath)
+    protected function checkConfigurationAuthorizedExtensions(array $configuration, string $configPath)
     {
         // we check that the given configuration has some defined authorized extensions
         if (empty($configuration['authorized_extensions'])) {
@@ -166,7 +168,7 @@ trait SecurityChecksTrait
      *
      * @throws \ErrorException
      */
-    private function checkImageConfigurationAvailableSizes(array $configuration, string $configPath)
+    protected function checkImageConfigurationAvailableSizes(array $configuration, string $configPath)
     {
         // we check that the given configuration has some defined available sizes
         if (empty($configuration['available_sizes'])) {
@@ -214,6 +216,18 @@ trait SecurityChecksTrait
                     . 'Both width and height are null.'
                 );
             }
+        }
+    }
+
+    /**
+     * @throws \ErrorException
+     */
+    protected function checkConfigFileTypes()
+    {
+        if (empty(config($this->configKey . '.file_types')) && !is_array(config($this->configKey . '.file_types'))) {
+            throw new ErrorException(
+                get_class($this) . ' : the "repository" config has no defined "file_types" array.'
+            );
         }
     }
 }
