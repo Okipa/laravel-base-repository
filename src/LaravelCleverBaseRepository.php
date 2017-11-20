@@ -72,7 +72,7 @@ class LaravelCleverBaseRepository
     public function saveEntity(Request $request, array $except = [], array $customValues = [])
     {
         // we get the attributes from the request
-        $attributes = $request->except(array_merge($except, $this->getDefaultRequestExceptEntries()));
+        $attributes = $this->exceptAttributesFromRequest($request, $except);
         // we merge the custom values to the attributes
         $attributes = array_merge_recursive($attributes, $customValues);
         // we create the entity
@@ -90,19 +90,23 @@ class LaravelCleverBaseRepository
     }
 
     /**
-     * Get the default request entries to except from the request
+     * Except attributes from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param array                    $except
      *
      * @return array $defaultRequestEntries
      */
-    protected function getDefaultRequestExceptEntries()
+    protected function exceptAttributesFromRequest(Request $request, array $except)
     {
-        $defaultRequestEntries = ['_token', '_method'];
+        $except[] = '_token';
+        $except[] = '_method';
         foreach ($this->getAvailableImageKeys() as $imageKey) {
-            $defaultRequestEntries[] = $imageKey;
-            $defaultRequestEntries[] = 'remove_' . $imageKey;
+            $except[] = $imageKey;
+            $except[] = 'remove_' . $imageKey;
         }
 
-        return $defaultRequestEntries;
+        return $request->except($except);
     }
 
     /**
