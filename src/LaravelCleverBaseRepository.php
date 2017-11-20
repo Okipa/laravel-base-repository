@@ -97,7 +97,7 @@ class LaravelCleverBaseRepository
      *
      * @return array $defaultRequestEntries
      */
-    protected function exceptAttributesFromRequest(Request $request, array $except)
+    protected function exceptAttributesFromRequest(Request $request, array $except = [])
     {
         $except[] = '_token';
         $except[] = '_method';
