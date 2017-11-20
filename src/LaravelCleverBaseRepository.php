@@ -69,7 +69,7 @@ class LaravelCleverBaseRepository
      *
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Foundation\Application|\Illuminate\Support\Collection|mixed
      */
-    public function saveEntityFromRequest(Request $request, array $except = [], array $customValues = [])
+    public function saveEntity(Request $request, array $except = [], array $customValues = [])
     {
         // we get the attributes from the request
         $attributes = $request->except(array_merge($except, $this->getDefaultRequestExceptEntries()));
