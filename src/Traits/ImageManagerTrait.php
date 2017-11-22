@@ -342,7 +342,7 @@ trait ImageManagerTrait
             $originalImgInstance->save($resizedImgPath);
             // we optimize the resized image
             if (config('repository.image_optimization')) {
-                app(OptimizerChain::class)->optimizeImage($resizedImgPath);
+                app(OptimizerChain::class)->optimize($resizedImgPath);
             }
         }
     }

@@ -12,34 +12,11 @@ return [
      * should run for the given image.
      */
     'optimizers'             => [
-
-        Jpegoptim::class => [
-            '--strip-all', // progressive image
-            '--all-progressive' // remove metadata
-        ],
-
-        Pngquant::class => [
-            '--force', // required parameter for this package
-            '--speed 1', // slowest treatment but best results
-            '--strip', // remove metadata
-            '--skip-if-larger', // post-treatment larger image compared to pre-treatment not saved
-        ],
-
-        Optipng::class => [
-            '-i0', // non-interlaced and progressive image
-            '-o7',  // slowest treatment but best results
-            '-strip all', // remove metadata
-            '-quiet' // required parameter for this package
-        ],
-
-        Svgo::class => [
-            '--disable=cleanupIDs' // disabling because it is know to cause troubles
-        ],
-
-        Gifsicle::class => [
-            '-b', // required parameter for this package
-            '-O3' // slowest treatment but best results
-        ],
+        Jpegoptim::class => ['--strip-all', '--all-progressive', '-m85', '--quiet'],
+        Pngquant::class  => ['--force', '--speed 1', '--strip'],
+        Optipng::class   => ['-i0', '-o7', '-strip all', '-quiet'],
+        Svgo::class      => ['--disable=cleanupIDs'],
+        Gifsicle::class  => ['-b', '-O3'],
     ],
 
     /**
@@ -51,5 +28,5 @@ return [
      * If set to `true` all output of the optimizer binaries will be appended to the default log.
      * You can also set this to a class that implements `Psr\Log\LoggerInterface`.
      */
-    'log_optimizer_activity' => false,
+    'log_optimizer_activity' => true,
 ];
