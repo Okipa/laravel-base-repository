@@ -1,12 +1,11 @@
 <?php
 
-namespace Okipa\LaravelBootstrapTableList;
+namespace Okipa\LaravelCleverBaseRepository;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\ImageServiceProvider;
-use Okipa\LaravelCleverBaseRepository\LaravelCleverBaseRepository;
 
 class LaravelCleverBaseRepositoryServiceProvider extends ServiceProvider
 {
