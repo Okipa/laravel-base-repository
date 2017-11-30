@@ -1,5 +1,5 @@
 {
-    "name": "okipa/laravel-clever-base-repository",
+    "name": "okipa/laravel-base-repository",
     "description": "",
     "keywords": [
         "okipa",
@@ -9,7 +9,7 @@
         "base",
         "repository"
     ],
-    "homepage": "https://github.com/Okipa/laravel-clever-base-repository",
+    "homepage": "https://github.com/Okipa/laravel-base-repository",
     "license": "MIT",
     "authors": [
         {
