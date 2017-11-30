@@ -1,13 +1,13 @@
 <?php
 
-namespace Okipa\LaravelCleverBaseRepository;
+namespace Okipa\LaravelBaseRepository;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\ImageServiceProvider;
 
-class LaravelCleverBaseRepositoryServiceProvider extends ServiceProvider
+class LaravelBaseRepositoryServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -18,7 +18,7 @@ class LaravelCleverBaseRepositoryServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../config/repository.php' => config_path('repository.php'),
-        ], 'LaravelCleverBaseRepository');
+        ], 'LaravelBaseRepository');
     }
 
     /**
@@ -33,8 +33,8 @@ class LaravelCleverBaseRepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/repository.php', 'repository');
-        $this->app->singleton('Okipa\LaravelCleverBaseRepository', function(Application $app) {
-            return $app->make(LaravelCleverBaseRepository::class);
+        $this->app->singleton('Okipa\LaravelBaseRepository', function(Application $app) {
+            return $app->make(LaravelBaseRepository::class);
         });
         // we load the intervention image package
         // https://github.com/Intervention/image

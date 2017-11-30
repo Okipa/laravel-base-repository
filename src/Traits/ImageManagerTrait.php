@@ -1,6 +1,6 @@
 <?php
 
-namespace Okipa\LaravelCleverBaseRepository\Traits;
+namespace Okipa\LaravelBaseRepository\Traits;
 
 use Illuminate\Http\UploadedFile;
 use Image;
@@ -155,6 +155,7 @@ trait ImageManagerTrait
      * @param bool                               $removeImage
      *
      * @return void
+     * @throws \ErrorException
      */
     public function storeImageFromUploadedFile(
         string $imageKey,
@@ -216,7 +217,6 @@ trait ImageManagerTrait
      * @param string $imageKey
      * @param string $imageName
      *
-     * @throws \ErrorException
      */
     public function destroyImage(string $imageKey, string $imageName)
     {

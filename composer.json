@@ -28,13 +28,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Okipa\\LaravelCleverBaseRepository\\": "src/"
+            "Okipa\\LaravelBaseRepository\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Okipa\\LaravelCleverBaseRepository\\LaravelCleverBaseRepositoryServiceProvider"
+                "Okipa\\LaravelBaseRepository\\LaravelBaseRepositoryServiceProvider"
             ]
         }
     },

@@ -1,6 +1,6 @@
 <?php
 
-namespace Okipa\LaravelCleverBaseRepository\Traits;
+namespace Okipa\LaravelBaseRepository\Traits;
 
 use ErrorException;
 
@@ -54,6 +54,8 @@ trait RepositoryAttributesTrait
 
     /**
      * Check that the repository config has been correctly set
+     *
+     * @throws \ErrorException
      */
     protected function setRepositoryAttributesFromConfig()
     {
@@ -158,6 +160,7 @@ trait RepositoryAttributesTrait
      * @param void
      *
      * @return void
+     * @throws \ErrorException
      */
     protected function checkFilesConfigurationsValidity()
     {

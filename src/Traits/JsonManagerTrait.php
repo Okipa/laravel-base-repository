@@ -1,6 +1,6 @@
 <?php
 
-namespace Okipa\LaravelCleverBaseRepository\Traits;
+namespace Okipa\LaravelBaseRepository\Traits;
 
 use Log;
 

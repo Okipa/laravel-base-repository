@@ -1,15 +1,15 @@
 <?php
 
-namespace Okipa\LaravelCleverBaseRepository;
+namespace Okipa\LaravelBaseRepository;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Okipa\LaravelCleverBaseRepository\Traits\EloquentOverlayTrait;
-use Okipa\LaravelCleverBaseRepository\Traits\ImageManagerTrait;
-use Okipa\LaravelCleverBaseRepository\Traits\JsonManagerTrait;
-use Okipa\LaravelCleverBaseRepository\Traits\RepositoryAttributesTrait;
+use Okipa\LaravelBaseRepository\Traits\EloquentOverlayTrait;
+use Okipa\LaravelBaseRepository\Traits\ImageManagerTrait;
+use Okipa\LaravelBaseRepository\Traits\JsonManagerTrait;
+use Okipa\LaravelBaseRepository\Traits\RepositoryAttributesTrait;
 
-class LaravelCleverBaseRepository
+class LaravelBaseRepository
 {
     use RepositoryAttributesTrait;
     use EloquentOverlayTrait;
@@ -50,7 +50,6 @@ class LaravelCleverBaseRepository
      * @param bool        $absolute Whether we want the returned path to be absolute
      *
      * @return string
-     * @throws \ErrorException
      */
     public function getPublicPath(string $path = null, bool $absolute = false)
     {
@@ -113,6 +112,7 @@ class LaravelCleverBaseRepository
      * Destroy the current model entity and all its related images defined in the repository configuration
      *
      * @return void
+     * @throws \ErrorException
      */
     public function destroyEntity()
     {

@@ -1,7 +1,8 @@
 <?php
 
-namespace Okipa\LaravelCleverBaseRepository\Traits;
+namespace Okipa\LaravelBaseRepository\Traits;
 
+use ErrorException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -165,6 +166,7 @@ trait EloquentOverlayTrait
      *
      * @return Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \ErrorException
      */
     public function first()
     {
@@ -270,6 +272,7 @@ trait EloquentOverlayTrait
      * Count the number of specified model records in the database
      *
      * @return int
+     * @throws \ErrorException
      */
     public function count()
     {
@@ -280,6 +283,7 @@ trait EloquentOverlayTrait
      * Get all the specified model records in the database
      *
      * @return Collection
+     * @throws \ErrorException
      */
     public function get()
     {
@@ -298,6 +302,7 @@ trait EloquentOverlayTrait
      *
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \ErrorException
      */
     public function findBy(string $attribute, mixed $value)
     {
@@ -311,6 +316,7 @@ trait EloquentOverlayTrait
      * Get all the model records in the database
      *
      * @return Collection
+     * @throws \ErrorException
      */
     public function all()
     {
@@ -342,6 +348,7 @@ trait EloquentOverlayTrait
      * @param array $columns
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @throws \ErrorException
      */
     public function paginate(int $perPage = 15, array $columns = ['*'])
     {
@@ -390,6 +397,7 @@ trait EloquentOverlayTrait
      * @param array $data
      *
      * @return Model
+     * @throws \ErrorException
      */
     public function updateById(int $entityId, array $data)
     {
@@ -407,6 +415,7 @@ trait EloquentOverlayTrait
      *
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \ErrorException
      */
     public function find(int $entityId)
     {
@@ -420,6 +429,7 @@ trait EloquentOverlayTrait
      * Delete one or more model records from the database
      *
      * @return int
+     * @throws \ErrorException
      */
     public function delete()
     {
@@ -436,6 +446,8 @@ trait EloquentOverlayTrait
      * @param int $entityId
      *
      * @return bool|null
+     * @throws \ErrorException
+     * @throws \Exception
      */
     public function deleteById(int $entityId)
     {
