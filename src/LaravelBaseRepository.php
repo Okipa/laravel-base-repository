@@ -67,6 +67,7 @@ class LaravelBaseRepository
      * @param array                    $customValues The key / values couples that will override the request data
      *
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Foundation\Application|\Illuminate\Support\Collection|mixed
+     * @throws \ErrorException
      */
     public function saveEntity(Request $request, array $except = [], array $customValues = [])
     {

@@ -16,9 +16,10 @@ class LaravelBaseRepositoryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // we publish the config on demand
         $this->publishes([
-            __DIR__ . '/../config/repository.php' => config_path('repository.php'),
-        ], 'LaravelBaseRepository');
+            __DIR__ . '/../config/base-repository.php' => config_path('base-repository.php'),
+        ], 'laravel-base-repository');
     }
 
     /**
@@ -32,7 +33,10 @@ class LaravelBaseRepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/repository.php', 'repository');
+        // we merge the custom configurations to the default ones
+        $this->mergeConfigFrom(__DIR__ . '/../config/base-repository.php', 'base-repository');
+        $this->mergeConfigFrom(__DIR__ . '/../config/image-optimizer.php', 'image-optimizer');
+        // we instantiate the package
         $this->app->singleton('Okipa\LaravelBaseRepository', function(Application $app) {
             return $app->make(LaravelBaseRepository::class);
         });

@@ -6,7 +6,7 @@ This package provide the following features :
 - Entity edition
 - Entity destruction
 - Entity's files versionning on creation and edition
-- Images resizing (sizes defined in `repository.php` config file) and optimizing
+- Images resizing (sizes defined in `base-repository.php` config file) and optimizing
 
 This package uses the following dependencies :
 - Images optimization : https://github.com/spatie/laravel-image-optimizer
@@ -24,4 +24,9 @@ If you don't use auto-discovery or if you use a Laravel 5.4- version, add the pa
 // laravel clever base repository
 // https://github.com/Okipa/laravel-base-repository
 $this->app->register(Okipa\LaravelBaseRepository\LaravelBaseRepositoryServiceProvider::class);
+```
+
+- Publish the package configuration
+```
+php artisan vendor:publish --tag=laravel-base-repository
 ```

@@ -1,13 +1,14 @@
 <?php
 
 return [
-    // repository file types
+    // allowed file types
     'file_types'         => [
         'images',
         'files',
     ],
+    // image optimization activation
     'image_optimization' => true,
-    // users configuration
+    // users example
     'users'              => [
         'images'       => [
             'photo' => [
