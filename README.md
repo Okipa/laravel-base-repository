@@ -1,5 +1,5 @@
 # laravel-base-repository
-A configuration-based abstract repository with automated processes that lighten and simplify your code.  
+A configuration-based abstract repository with superpowers that simplifies your code.  
 With this repository, easily handle your entities.  
 This package provide methods for the following features :
 - Entity create

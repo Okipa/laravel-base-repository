@@ -1,11 +1,10 @@
 {
     "name": "okipa/laravel-base-repository",
-    "description": "",
+    "description": "A configuration-based abstract repository with superpowers that simplifies your code.",
     "keywords": [
         "okipa",
         "php",
         "laravel",
-        "clever",
         "base",
         "repository"
     ],
