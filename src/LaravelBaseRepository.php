@@ -15,6 +15,7 @@ class LaravelBaseRepository
     use EloquentOverlayTrait;
     use ImageManagerTrait;
     use JsonManagerTrait;
+    const CONFIG_FILE = 'base-repository';
 
     /**
      * BaseRepository constructor.
@@ -24,7 +25,7 @@ class LaravelBaseRepository
     public function __construct()
     {
         // we set the config key
-        $this->configKey = $this->configKey ? 'base-repository.' . $this->configKey : null;
+        $this->configKey = $this->configKey ? self::CONFIG_FILE . '.' . $this->configKey : null;
         // we check the repository config
         $this->setRepositoryAttributesFromConfig();
         // we set the repository model

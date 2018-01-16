@@ -28,7 +28,7 @@ trait ImageManagerTrait
 
     /**
      * Get the image config size
-     * 
+     *
      * @param string $imageKey
      * @param string $sizeKey
      *
@@ -50,7 +50,7 @@ trait ImageManagerTrait
 
     /**
      * Get the image config
-     * 
+     *
      * @param string $imageKey
      *
      * @return array
@@ -109,7 +109,7 @@ trait ImageManagerTrait
 
     /**
      * Get the image available sizes
-     * 
+     *
      * @param string $imageKey
      *
      * @return array
@@ -338,7 +338,7 @@ trait ImageManagerTrait
             // we store the resized image
             $originalImgInstance->save($resizedImgPath);
             // we optimize the resized image
-            if (config('repository.image_optimization')) {
+            if (config(self::CONFIG_FILE . '.image_optimization')) {
                 app(OptimizerChain::class)->optimize($resizedImgPath);
             }
         }

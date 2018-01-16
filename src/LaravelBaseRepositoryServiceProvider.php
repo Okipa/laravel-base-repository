@@ -18,13 +18,14 @@ class LaravelBaseRepositoryServiceProvider extends ServiceProvider
     {
         // we publish the config on demand
         $this->publishes([
-            __DIR__ . '/../config/base-repository.php' => config_path('base-repository.php'),
+            __DIR__ . '/../config/' . LaravelBaseRepository::CONFIG_FILE . '.php' => config_path(
+                LaravelBaseRepository::CONFIG_FILE . '.php'
+            ),
         ], 'laravel-base-repository');
     }
 
     /**
      * Register any application services.
-     *
      * This service provider is a great spot to register your various container
      * bindings with the application. As you can see, we are registering our
      * "Registrar" implementation here. You can add your own bindings too!
@@ -34,7 +35,10 @@ class LaravelBaseRepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         // we merge the custom configurations to the default ones
-        $this->mergeConfigFrom(__DIR__ . '/../config/base-repository.php', 'base-repository');
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/' . LaravelBaseRepository::CONFIG_FILE . '.php',
+            LaravelBaseRepository::CONFIG_FILE
+        );
         $this->mergeConfigFrom(__DIR__ . '/../config/image-optimizer.php', 'image-optimizer');
         // we instantiate the package
         $this->app->singleton('Okipa\LaravelBaseRepository', function(Application $app) {

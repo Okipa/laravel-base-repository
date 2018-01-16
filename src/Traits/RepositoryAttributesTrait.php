@@ -44,7 +44,7 @@ trait RepositoryAttributesTrait
      */
     protected function checkModelDatabaseInstance()
     {
-        if (!$this->model || !$this->model->id) {
+        if (! $this->model || ! $this->model->id) {
             throw new ErrorException(get_class($this) . ' : the repository related model "'
                                      . $this->model->getMorphClass() . '" has not been loaded from database. '
                                      . 'Please set a database loaded instance to the repository '
@@ -80,7 +80,7 @@ trait RepositoryAttributesTrait
      */
     protected function checkConfigExists()
     {
-        $definedConfigKey = !!$this->configKey;
+        $definedConfigKey = ! ! $this->configKey;
         if ($definedConfigKey && is_null(config($this->configKey))) {
             throw new ErrorException(
                 get_class($this) . ' : the config "' . $this->configKey . '" does not exist.'
@@ -95,13 +95,13 @@ trait RepositoryAttributesTrait
      */
     protected function setRepositoryFileTypes()
     {
-        if (empty(config('repository.file_types')) && !is_array(config('repository.file_types'))) {
+        if (empty(config(self::CONFIG_FILE . '.file_types')) && ! is_array(config(self::CONFIG_FILE . '.file_types'))) {
             throw new ErrorException(
-                get_class($this) . ' : the "repository" config has no defined "file_types" array.'
+                get_class($this) . ' : the « ' . self::CONFIG_FILE . ' » config has no defined "file_types" array.'
             );
         }
         // we set the file types attribute
-        $this->fileTypes = config('repository.file_types');
+        $this->fileTypes = config(self::CONFIG_FILE . '.file_types');
     }
 
     /**
@@ -116,7 +116,7 @@ trait RepositoryAttributesTrait
             );
         }
         // we check if the config json storage instruction is a boolean value
-        if (!is_bool(config($this->configKey . '.json_storage'))) {
+        if (! is_bool(config($this->configKey . '.json_storage'))) {
             throw new ErrorException(
                 get_class($this) . ' : the config "' . $this->configKey
                 . '.json_storage" instruction is not a boolean value.'
@@ -132,7 +132,7 @@ trait RepositoryAttributesTrait
     protected function setRepositoryStoragePath()
     {
         // we check if the config storage path is defined
-        if (!config($this->configKey . '.storage_path')) {
+        if (! config($this->configKey . '.storage_path')) {
             throw new ErrorException(
                 get_class($this) . ' : the config "' . $this->configKey . '" has no defined "storage_path" value.'
             );
@@ -147,7 +147,7 @@ trait RepositoryAttributesTrait
     protected function setRepositoryPublicPath()
     {
         // we check if the config public path is defined
-        if (!config($this->configKey . '.public_path')) {
+        if (! config($this->configKey . '.public_path')) {
             throw new ErrorException(
                 get_class($this) . ' : the config "' . $this->configKey . '" has no defined public_path" value.'
             );
@@ -211,7 +211,7 @@ trait RepositoryAttributesTrait
             );
         };
         // we check that the authorized extensions value is an array
-        if (!is_array($configuration['authorized_extensions'])) {
+        if (! is_array($configuration['authorized_extensions'])) {
             throw new ErrorException(
                 'The "authorized_extensions" value for the config "' . $configPath . '" is not an array.'
             );
@@ -233,7 +233,7 @@ trait RepositoryAttributesTrait
             );
         };
         // we check that the available sizes value is an array
-        if (!is_array($configuration['available_sizes'])) {
+        if (! is_array($configuration['available_sizes'])) {
             throw new ErrorException(
                 get_class($this) . ' : the "available_sizes" value for the config "' . $configPath
                 . '" is not an array.'
@@ -265,7 +265,7 @@ trait RepositoryAttributesTrait
             }
             $width = $sizeValues['width'];
             $height = $sizeValues['height'];
-            if (!$width && !$height) {
+            if (! $width && ! $height) {
                 throw new ErrorException(
                     get_class($this) . ' : incorrect "' . $sizeKey . '" size value : '
                     . json_encode($sizeValues) . '.' . ' for the config "' . $configPath . '".'
