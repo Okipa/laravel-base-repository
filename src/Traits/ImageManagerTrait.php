@@ -2,11 +2,11 @@
 
 namespace Okipa\LaravelBaseRepository\Traits;
 
+use File;
 use Illuminate\Http\UploadedFile;
 use Image;
 use InvalidArgumentException;
 use Spatie\ImageOptimizer\OptimizerChain;
-use File;
 
 trait ImageManagerTrait
 {
@@ -27,6 +27,8 @@ trait ImageManagerTrait
     }
 
     /**
+     * Get the image config size
+     * 
      * @param string $imageKey
      * @param string $sizeKey
      *
@@ -37,7 +39,7 @@ trait ImageManagerTrait
         // we get the image config
         $imageConfig = $this->getImageConfig($imageKey);
         // we check that the given size key exists
-        if (!array_key_exists($sizeKey, $imageConfig['available_sizes'])) {
+        if (! array_key_exists($sizeKey, $imageConfig['available_sizes'])) {
             throw new InvalidArgumentException(get_class($this) . ' : the size key "' . $sizeKey
                                                . '" does not exist in the "' . $this->configKey . '.images.' . $imageKey
                                                . '" configuration.');
@@ -47,6 +49,8 @@ trait ImageManagerTrait
     }
 
     /**
+     * Get the image config
+     * 
      * @param string $imageKey
      *
      * @return array
@@ -56,34 +60,13 @@ trait ImageManagerTrait
         // we get the config
         $imageConfig = config($this->configKey . '.images');
         // we check that the given key exists
-        if (!array_key_exists($imageKey, $imageConfig)) {
+        if (! array_key_exists($imageKey, $imageConfig)) {
             throw new InvalidArgumentException(get_class($this) . ' : the image key "' . $imageKey
                                                . '" does not exist in the "' . $this->configKey . '.images'
                                                . '" configuration.');
         }
 
         return $imageConfig[$imageKey];
-    }
-
-    /**
-     * @return array
-     */
-    protected function getAvailableImageKeys()
-    {
-        return array_keys(config($this->configKey . '.images'));
-    }
-
-    /**
-     * @param string $imageKey
-     *
-     * @return array
-     */
-    protected function getImageAvailableSizes(string $imageKey)
-    {
-        // we get the image config
-        $imageConfig = $this->getImageConfig($imageKey);
-
-        return $imageConfig['available_sizes'];
     }
 
     /**
@@ -125,7 +108,22 @@ trait ImageManagerTrait
     }
 
     /**
-     * * Get the maximum height from the image sizes
+     * Get the image available sizes
+     * 
+     * @param string $imageKey
+     *
+     * @return array
+     */
+    protected function getImageAvailableSizes(string $imageKey)
+    {
+        // we get the image config
+        $imageConfig = $this->getImageConfig($imageKey);
+
+        return $imageConfig['available_sizes'];
+    }
+
+    /**
+     * Get the maximum height from the image sizes
      *
      * @param string $imageKey
      *
@@ -216,12 +214,11 @@ trait ImageManagerTrait
      *
      * @param string $imageKey
      * @param string $imageName
-     *
      */
     public function destroyImage(string $imageKey, string $imageName)
     {
         // we get the image extension
-        if (!$extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION))) {
+        if (! $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION))) {
             throw new InvalidArgumentException(get_class($this) . ' : the given image "' . $imageName
                                                . '" has no extension.');
         };
@@ -328,8 +325,8 @@ trait ImageManagerTrait
                     });
                     break;
                 // only width or height is given
-                case $width && !$height:
-                case !$width && $height:
+                case $width && ! $height:
+                case ! $width && $height:
                     $originalImgInstance->resize($width, $height, function($constraint) {
                         $constraint->aspectRatio();
                         $constraint->upsize();
@@ -359,13 +356,13 @@ trait ImageManagerTrait
     public function storeImageFromPath(string $imageKey, string $imgPath, bool $removeSource = false)
     {
         // we check if the source image exists
-        if (!is_file($imgPath)) {
+        if (! is_file($imgPath)) {
             throw new InvalidArgumentException(
                 get_class($this) . ' : the source image "' . $imgPath . '" does not exist.'
             );
         }
         // we get the image extension
-        if (!$extension = pathinfo($imgPath, PATHINFO_EXTENSION)) {
+        if (! $extension = pathinfo($imgPath, PATHINFO_EXTENSION)) {
             throw new InvalidArgumentException(
                 get_class($this) . ' : the given image "' . $imgPath . '" has no extension.'
             );
@@ -396,11 +393,11 @@ trait ImageManagerTrait
     public function getImagePath(string $imageName, string $sizeKey = null)
     {
         // we no size key is given, we return the original image
-        if (!$sizeKey) {
+        if (! $sizeKey) {
             return asset($this->getPublicPath($imageName));
         }
         // we get the image extension
-        if (!$extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION))) {
+        if (! $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION))) {
             throw new InvalidArgumentException(get_class($this) . ' : the given image "' . $imageName
                                                . '" has no extension.');
         };
@@ -435,5 +432,13 @@ trait ImageManagerTrait
         $imageConfig = $this->getImageConfig($imageKey);
 
         return $imageConfig['authorized_extensions'];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAvailableImageKeys()
+    {
+        return array_keys(config($this->configKey . '.images'));
     }
 }

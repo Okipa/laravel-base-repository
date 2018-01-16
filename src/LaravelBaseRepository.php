@@ -18,6 +18,8 @@ class LaravelBaseRepository
 
     /**
      * BaseRepository constructor.
+     *
+     * @throws \ErrorException
      */
     public function __construct()
     {
@@ -59,8 +61,8 @@ class LaravelBaseRepository
     }
 
     /**
-     * Automatically save the entity attributes and its related images from the request and according to the repository
-     * configuration.
+     * Automatically save the entity attributes and its related files & images from the request and according to the
+     * repository configuration.
      *
      * @param \Illuminate\Http\Request $request
      * @param array                    $except       The request keys that will not be stored
@@ -90,26 +92,6 @@ class LaravelBaseRepository
     }
 
     /**
-     * Except attributes from request
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param array                    $except
-     *
-     * @return array $defaultRequestEntries
-     */
-    protected function exceptAttributesFromRequest(Request $request, array $except = [])
-    {
-        $except[] = '_token';
-        $except[] = '_method';
-        foreach ($this->getAvailableImageKeys() as $imageKey) {
-            $except[] = $imageKey;
-            $except[] = 'remove_' . $imageKey;
-        }
-
-        return $request->except($except);
-    }
-
-    /**
      * Destroy the current model entity and all its related images defined in the repository configuration
      *
      * @return void
@@ -127,5 +109,25 @@ class LaravelBaseRepository
         }
         // we destroy the entity
         $this->model->delete();
+    }
+
+    /**
+     * Except attributes from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param array                    $except
+     *
+     * @return array $defaultRequestEntries
+     */
+    protected function exceptAttributesFromRequest(Request $request, array $except = [])
+    {
+        $except[] = '_token';
+        $except[] = '_method';
+        foreach ($this->getAvailableImageKeys() as $imageKey) {
+            $except[] = $imageKey;
+            $except[] = 'remove_' . $imageKey;
+        }
+
+        return $request->except($except);
     }
 }
