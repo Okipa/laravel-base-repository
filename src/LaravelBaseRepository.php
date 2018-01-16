@@ -24,7 +24,7 @@ class LaravelBaseRepository
     public function __construct()
     {
         // we set the config key
-        $this->configKey = $this->configKey ? 'repository.' . $this->configKey : null;
+        $this->configKey = $this->configKey ? 'base-repository.' . $this->configKey : null;
         // we check the repository config
         $this->setRepositoryAttributesFromConfig();
         // we set the repository model
