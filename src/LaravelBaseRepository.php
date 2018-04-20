@@ -4,61 +4,18 @@ namespace Okipa\LaravelBaseRepository;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Okipa\LaravelBaseRepository\Traits\EloquentOverlayTrait;
-use Okipa\LaravelBaseRepository\Traits\ImageManagerTrait;
-use Okipa\LaravelBaseRepository\Traits\JsonManagerTrait;
-use Okipa\LaravelBaseRepository\Traits\RepositoryAttributesTrait;
 
 class LaravelBaseRepository
 {
-    use RepositoryAttributesTrait;
-    use EloquentOverlayTrait;
-    use ImageManagerTrait;
-    use JsonManagerTrait;
-    const CONFIG_FILE = 'base-repository';
-
     /**
      * BaseRepository constructor.
-     *
-     * @throws \ErrorException
      */
     public function __construct()
     {
-        // we set the config key
-        $this->configKey = $this->configKey ? self::CONFIG_FILE . '.' . $this->configKey : null;
-        // we check the repository config
-        $this->setRepositoryAttributesFromConfig();
         // we set the repository model
         if ($this->model && !$this->model instanceof Model) {
             $this->model = app($this->model);
         }
-    }
-
-    /**
-     * Get the repository storage path
-     *
-     * @param string|null $path The path we want to add after the returned storage path
-     *
-     * @return string
-     */
-    public function getStoragePath(string $path = null)
-    {
-        return storage_path($this->storagePath) . ($path ? '/' . $path : '');
-    }
-
-    /**
-     * Get the repository public path
-     *
-     * @param string|null $path     The path we want to add after the returned public path
-     * @param bool        $absolute Whether we want the returned path to be absolute
-     *
-     * @return string
-     */
-    public function getPublicPath(string $path = null, bool $absolute = false)
-    {
-        return $absolute
-            ? public_path($this->publicPath) . ($path ? '/' . $path : '')
-            : $this->publicPath . ($path ? '/' . $path : '');
     }
 
     /**
@@ -93,22 +50,12 @@ class LaravelBaseRepository
     }
 
     /**
-     * Destroy the current model entity and all its related images defined in the repository configuration
+     * Destroy the current model entity
      *
      * @return void
-     * @throws \ErrorException
      */
     public function destroyEntity()
     {
-        // we check that the current repository model is loaded from database
-        $this->checkModelDatabaseInstance();
-        // we destroy the entity images
-        foreach ($this->getAvailableImageKeys() as $imageKey) {
-            if ($imageName = $this->model->{$imageKey}) {
-                $this->destroyImage($imageKey, $imageName);
-            }
-        }
-        // we destroy the entity
         $this->model->delete();
     }
 
@@ -120,14 +67,10 @@ class LaravelBaseRepository
      *
      * @return array $defaultRequestEntries
      */
-    protected function exceptAttributesFromRequest(Request $request, array $except = [])
+    protected function exceptLaravelHttpAttributesFromRequest(Request $request, array $except = [])
     {
         $except[] = '_token';
         $except[] = '_method';
-        foreach ($this->getAvailableImageKeys() as $imageKey) {
-            $except[] = $imageKey;
-            $except[] = 'remove_' . $imageKey;
-        }
 
         return $request->except($except);
     }

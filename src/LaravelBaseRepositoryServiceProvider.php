@@ -4,8 +4,6 @@ namespace Okipa\LaravelBaseRepository;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use Intervention\Image\Facades\Image;
-use Intervention\Image\ImageServiceProvider;
 
 class LaravelBaseRepositoryServiceProvider extends ServiceProvider
 {
@@ -18,9 +16,7 @@ class LaravelBaseRepositoryServiceProvider extends ServiceProvider
     {
         // we publish the config on demand
         $this->publishes([
-            __DIR__ . '/../config/' . LaravelBaseRepository::CONFIG_FILE . '.php' => config_path(
-                LaravelBaseRepository::CONFIG_FILE . '.php'
-            ),
+            __DIR__ . '/../config/base-repository.php' => config_path('base-repository.php'),
         ], 'laravel-base-repository');
     }
 
@@ -35,18 +31,10 @@ class LaravelBaseRepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         // we merge the custom configurations to the default ones
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/' . LaravelBaseRepository::CONFIG_FILE . '.php',
-            LaravelBaseRepository::CONFIG_FILE
-        );
-        $this->mergeConfigFrom(__DIR__ . '/../config/image-optimizer.php', 'image-optimizer');
+        $this->mergeConfigFrom(__DIR__ . '/../config/base-repository.php', 'base-repository');
         // we instantiate the package
         $this->app->singleton('Okipa\LaravelBaseRepository', function(Application $app) {
             return $app->make(LaravelBaseRepository::class);
         });
-        // we load the intervention image package
-        // https://github.com/Intervention/image
-        $this->app->register(ImageServiceProvider::class);
-        $this->app->alias('Image', Image::class);
     }
 }
