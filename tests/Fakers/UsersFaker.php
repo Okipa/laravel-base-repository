@@ -8,9 +8,6 @@ use Okipa\LaravelBaseRepository\Test\Models\User;
 
 trait UsersFaker
 {
-    public $clearPassword;
-    public $data;
-
     public function createMultipleUsers(int $count)
     {
         $users = new Collection();
@@ -23,9 +20,7 @@ trait UsersFaker
 
     public function createUniqueUser()
     {
-        $user = app(User::class)->create($this->generateFakeUserData());
-
-        return app(User::class)->find($user->id);
+        return  app(User::class)->create($this->generateFakeUserData());
     }
 
     public function generateFakeUserData()
@@ -33,7 +28,7 @@ trait UsersFaker
         return [
             'name'     => $this->faker->name,
             'email'    => $this->faker->email,
-            'password' => Hash::make($this->clearPassword),
+            'password' => Hash::make($this->faker->password),
         ];
     }
 }

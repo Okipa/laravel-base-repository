@@ -10,23 +10,29 @@ use Illuminate\Http\Request;
 abstract class BaseRepository
 {
     /**
-     * The repository associated main model
+     * The repository associated main model.
      *
      * @var \Illuminate\Database\Eloquent\Model
      */
     protected $model;
     /**
-     * The repository associated request
+     * The repository associated request.
      *
      * @var \Illuminate\Http\Request
      */
     protected $request;
     /**
-     * Except standard laravel http attributes from request attributes
+     * Default attributes to automatically except from request treatments.
+     *
+     * @var array
+     */
+    protected $defaultAttributesToExcept = ['_token', '_method'];
+    /**
+     * Automatically except defined $defaultAttributesToExcept from the request treatments.
      *
      * @var boolean
      */
-    protected $exceptLaravelStandardHttpAttributes = true;
+    protected $exceptDefaultAttributes = true;
 
     /**
      * BaseRepository constructor.
@@ -88,9 +94,8 @@ abstract class BaseRepository
      */
     protected function exceptAttributesFromRequest(array $attributesToExcept = [])
     {
-        if ($this->exceptLaravelStandardHttpAttributes) {
-            $attributesToExcept[] = '_token';
-            $attributesToExcept[] = '_method';
+        if ($this->exceptDefaultAttributes) {
+            $attributesToExcept = array_merge($this->defaultAttributesToExcept, $attributesToExcept);
         }
         $this->request->replace($this->request->except($attributesToExcept));
     }
