@@ -1,12 +1,14 @@
 {
     "name": "okipa/laravel-base-repository",
-    "description": "A configuration-based abstract repository with superpowers that simplifies your code.",
+    "description": "An abstract base repository with predefined common features.",
     "keywords": [
         "okipa",
+        "package",
         "php",
         "laravel",
         "base",
-        "repository"
+        "repository",
+        "pattern"
     ],
     "homepage": "https://github.com/Okipa/laravel-base-repository",
     "license": "MIT",
@@ -19,20 +21,19 @@
     ],
     "require": {
         "php": ">=7.0",
-        "laravel/framework": "~5.0"
+        "illuminate/support": "~5.0"
     },
     "require-dev": {
+        "orchestra/testbench": "^3.6"
     },
     "autoload": {
         "psr-4": {
             "Okipa\\LaravelBaseRepository\\": "src/"
         }
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Okipa\\LaravelBaseRepository\\LaravelBaseRepositoryServiceProvider"
-            ]
+    "autoload-dev": {
+        "psr-4": {
+            "Okipa\\LaravelBaseRepository\\Test\\": "tests/"
         }
     },
     "minimum-stability": "stable"
