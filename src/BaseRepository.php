@@ -2,10 +2,10 @@
 
 namespace Okipa\LaravelBaseRepository;
 
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class BaseRepository
 {
@@ -44,16 +44,6 @@ abstract class BaseRepository
     }
 
     /**
-     * Set the repository request to use.
-     *
-     * @param \Illuminate\Http\Request $request
-     */
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
      * Set the repository model class to instantiate.
      *
      * @param string $modelClass
@@ -68,12 +58,22 @@ abstract class BaseRepository
     }
 
     /**
+     * Set the repository request to use.
+     *
+     * @param \Illuminate\Http\Request $request
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * Create one or more model instances from the request data.
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
-     * @param array $attributesToExcept
-     * @param array $attributesToAddOrReplace
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -139,8 +139,8 @@ abstract class BaseRepository
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
-     * @param array $attributesToExcept
-     * @param array $attributesToAddOrReplace
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Exception
@@ -149,21 +149,38 @@ abstract class BaseRepository
     {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
-        $primary = $this->getModelPrimaryFromRequest();
 
-        return $primary
-            ? $this->updateFromPrimary($primary, $this->request->all())
-            : $this->model->create($this->request->all());
+        return $this->createOrUpdateFromArray($this->request->all());
     }
 
     /**
-     * Get model primary value from request.
+     * Create or update a model instance from array data.
+     * The use of this method suppose that your array is correctly formatted.
      *
-     * @return int
+     * @param array $data
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Exception
      */
-    protected function getModelPrimaryFromRequest()
+    public function createOrUpdateFromArray(array $data)
     {
-        return $this->request->input($this->model->getKeyName());
+        $primary = $this->getModelPrimaryFromArray($data);
+
+        return $primary
+            ? $this->updateFromPrimary($primary, $data)
+            : $this->model->create($data);
+    }
+
+    /**
+     * Get model primary value from array.
+     *
+     * @param array $data
+     *
+     * @return mixed
+     */
+    protected function getModelPrimaryFromArray(array $data)
+    {
+        return array_get($data, $this->model->getKeyName());
     }
 
     /**
@@ -178,23 +195,37 @@ abstract class BaseRepository
     public function updateFromPrimary(int $instancePrimary, array $data)
     {
         $this->model->findOrFail($instancePrimary)->update($data);
-        
-        return $this->model->find($instancePrimary);
+
+        return $this->model->fresh();
     }
 
     /**
-     * Destroy a model instance from the request data
+     * Destroy a model instance from the request data.
      *
-     * @return bool|null|\Exception
-     * @throws \Exception
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param array $attributesToAddOrReplace (dot notation accepted)
+     *
+     * @return bool|null
      */
-    public function deleteFromRequest()
+    public function deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
     {
-        $primary = $this->getModelPrimaryFromRequest();
+        $this->exceptAttributesFromRequest($attributesToExcept);
+        $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
 
-        return $primary
-            ? $this->model->findOrFail($primary)->delete()
-            : new Exception('The request does not contain the repository-associated-model primary key value.');
+        return $this->deleteFromArray($this->request->all());
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function deleteFromArray(array $data)
+    {
+        $primary = $this->getModelPrimaryFromArray($data);
+
+        return $this->model->findOrFail($primary)->delete();
     }
 
     /**
@@ -203,7 +234,7 @@ abstract class BaseRepository
      * @param int $instancePrimary
      *
      * @return bool|null
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function deleteFromPrimary(int $instancePrimary)
     {
@@ -211,7 +242,7 @@ abstract class BaseRepository
     }
 
     /**
-     * Delete multiple model instances from their primary keys
+     * Delete multiple model instances from their primary keys.
      *
      * @param array $instancePrimaries
      *
@@ -220,5 +251,74 @@ abstract class BaseRepository
     public function deleteMultipleFromPrimaries(array $instancePrimaries)
     {
         return $this->model->destroy($instancePrimaries);
+    }
+
+    /**
+     * Paginate array results.
+     *
+     * @param array $data
+     * @param int   $perPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public function paginateArrayResults(array $data, int $perPage = 50)
+    {
+        $page = $this->request->input('page', 1);
+        $offset = ($page * $perPage) - $perPage;
+
+        return new LengthAwarePaginator(
+            array_slice($data, $offset, $perPage, false),
+            count($data),
+            $perPage,
+            $page,
+            [
+                'path'  => $this->request->url(),
+                'query' => $this->request->query(),
+            ]
+        );
+    }
+
+    /**
+     * @param int $instancePrimary
+     *
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function findOneFromPrimary(int $instancePrimary)
+    {
+        return $this->model->findOrFail($instancePrimary);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function findOneFromArray(array $data)
+    {
+        return $this->model->where($data)->firstOrFail();
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function findMultipleFromArray(array $data)
+    {
+        return $this->model->where($data)->all();
+    }
+
+    /**
+     * @param array  $columns
+     * @param string $orderBy
+     * @param string $sortBy
+     *
+     * @return mixed
+     */
+    public function getAll($columns = ['*'], string $orderBy = 'id', string $sortBy = 'asc')
+    {
+        return $this->model->orderBy($orderBy, $sortBy)->get($columns);
     }
 }

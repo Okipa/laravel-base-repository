@@ -1,76 +1,115 @@
 # laravel-base-repository
-A configuration-based abstract repository with superpowers that simplifies your code.  
-With this repository, easily handle your entities.  
-This package provide methods for the following features :
-- Entity create
-- Entity update
-- Entity destroy
-- Choice between json or database storage
-- Automated entity's files renaming and storage
-- Automated entity's images renaming, optimizing and storage
+An abstract base repository with predefined common features.
 
-This package uses the following dependencies :
-- Images optimization : https://github.com/spatie/laravel-image-optimizer
-- Images manipulation : https://github.com/Intervention/image
+[![Source Code](https://img.shields.io/badge/source-okipa/laravel--model--base--repository-blue.svg)](https://github.com/Okipa/laravel-base-repository)
+[![Latest Version](https://img.shields.io/github/release/okipa/laravel-base-repository.svg?style=flat-square)](https://github.com/Okipa/laravel-base-repository/releases)
+[![Total Downloads](https://img.shields.io/packagist/dt/okipa/laravel-base-repository.svg?style=flat-square)](https://packagist.org/packages/okipa/laravel-base-repository)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://scrutinizer-ci.com/g/Okipa/laravel-base-repository/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Okipa/laravel-base-repository/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/Okipa/laravel-base-repository/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Okipa/laravel-base-repository/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Okipa/laravel-base-repository/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Okipa/laravel-base-repository/?branch=master)
 
 ------------------------------------------------------------------------------------------------------------------------
+
+## Before starting
+You should be familiar with the repository pattern, and especially with its Laravel implementation.  
+You can know more about this with this article : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd
 
 ## Installation
 - Install the package with composer :
 ```bash
 composer require okipa/laravel-base-repository
 ```
-
-- Laravel 5.5+ uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider.
-If you don't use auto-discovery or if you use a Laravel 5.4- version, add the package service provider in the `register()` method from your `app/Providers/AppServiceProvider.php` :
+- Create your projet `app/Providers/RepositoryServiceProvider.php` file. You can follow the example below :
 ```php
-// laravel clever base repository
-// https://github.com/Okipa/laravel-base-repository
-$this->app->register(Okipa\LaravelBaseRepository\LaravelBaseRepositoryServiceProvider::class);
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use App\Repositories\User\UserRepositoryInterface;
+
+class RepositoryServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        // users
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        
+        // then, register all your other repositories here ...
+    }
+}
 ```
 
-- Publish the package configuration
+- Add your `RepositoryServiceProvider` to the providers declarations of the Laravel framework, in the `config/app.php` :
 ```php
-php artisan vendor:publish --tag=laravel-base-repository
+// ...
+
+'providers' => [
+    // other provider declarations ...
+    
+    // custom providers
+    App\Providers\RepositoryServiceProvider::class,
+],
+
+// ...
 ```
 
-- Extends your own BaseRepository with the `Okipa\LaravelBaseRepository\LaravelBaseRepository` package file to empower your repositories.
+- Create an `app/Repositories` directory where you will store your different project repo.
+- Create your project 'app/Repositories/BaseRepository.php` abstract class as following :
 ```php
 namespace App\Repositories;
 
-use Okipa\LaravelBaseRepository\LaravelBaseRepository;
+use Okipa\LaravelBaseRepository\BaseRepository;
 
-class BaseRepository extends LaravelBaseRepository
+abstract class BaseRepository extends BaseRepository
 {
-    // your base repository code ...
+    // your base repository custom code ...
 }
 ```
-
-- Define the `$configKey` and the `$model` variables in your repository as shown in the example bellow.
+- Create an `app/Repositories/User/UserRepositoryInterface.php` interface :
 ```php
-namespace App\Repositories\Users;
+namespace App\Repositories\User;
 
-class UserRepository extends UnicornRepository implements UserRepositoryInterface
+use App\Repositories\UserRepositoryInterface;
+
+interface UserRepositoryInterface
 {
 
-    protected $configKey = 'users';
-    protected $model = User::class;
-    
-    // your user repository code ...
+    /**
+     * @param array $selected
+     * @param array $data
+     *
+     * @return array
+     */
+    public function getListOfActiveEvents(array $selected, array $data): array;
 }
+
 ```
-- Set the repository configuration in the `config/base-repository.php` file. Check and personalize the `users` example to create your other repositories configurations.
 
 ------------------------------------------------------------------------------------------------------------------------
 
 ## Usage
 
+
+
 ## API
 
-### Eloquent overlay
+### Attributes
 
-### Json storage
-
-### Images management
-
-### Files management
+### Methods
