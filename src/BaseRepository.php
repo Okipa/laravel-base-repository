@@ -194,9 +194,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function updateFromPrimary(int $instancePrimary, array $data)
     {
-        $this->model->findOrFail($instancePrimary)->update($data);
-
-        return $this->model->fresh();
+        $instance = $this->model->findOrFail($instancePrimary);
+        $instance->update($data);
+        
+        return $instance->fresh();
     }
 
     /**
@@ -217,7 +218,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     /**
      * Delete a model instance from a data array.
-     * 
+     *
      * @param array $data
      *
      * @return bool
