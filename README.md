@@ -31,7 +31,7 @@ composer require okipa/laravel-base-repository
 
 - Create a `app/Repositories` directory where you will store your different project repositories.
 
-- Create your `app/Repositories/BaseRepositoryInterface.php` interface and your 'app/Repositories/BaseRepository.php` abstract class :
+- Create your `app/Repositories/BaseRepositoryInterface.php` interface and your `app/Repositories/BaseRepository.php` abstract class :
 ```php
 <?php
 
