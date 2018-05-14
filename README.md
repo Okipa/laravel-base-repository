@@ -208,12 +208,14 @@ class UsersController extends Controller
 
 ### Properties
 
-| Property | Visibility | Default value | Description |
-|-----------|-----------|-----------|-----------|
-| $model | protected |  | The repository associated main model. |
-| $request | protected | request() | The repository associated request. |
-| $defaultAttributesToExcept | protected | ['_token', '_method'] | Default attributes to automatically except from request treatments. |
-| $exceptDefaultAttributes | protected | true | Automatically except defined $defaultAttributesToExcept from the request treatments. |
+- `protected $model`
+    > The repository associated main model.
+- `protected $request = request()`
+    > The repository associated request.
+- `protected $defaultAttributesToExcept = ['_token', '_method']`
+    > Default attributes to automatically except from request treatments.
+- `protected $exceptDefaultAttributes = true`
+    > Automatically except defined $defaultAttributesToExcept from the request treatments.
 
 ### Public methods
 
