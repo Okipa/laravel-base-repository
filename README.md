@@ -206,6 +206,33 @@ class UsersController extends Controller
 
 ## API
 
-### Attributes
+### Properties
 
-### Methods
+| Property | Visibility | Default value | Description |
+|-----------|-----------|-----------|-----------|
+| $model | protected | null | The repository associated main model. |
+| $request | protected | request() | The repository associated request. |
+| $defaultAttributesToExcept | protected | ['_token', '_method'] | Default attributes to automatically except from request treatments. |
+| $exceptDefaultAttributes | protected | true | Automatically except defined $defaultAttributesToExcept from the request treatments. |
+
+### Public methods
+
+| Method | Description |
+|-----------|-----------|
+| setModel(string $modelClass) | Set the repository model class to instantiate. |
+| setRequest(\Illuminate\Http\Request $request) | Set the repository request to use. |
+| createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []) | Create multiple model instances from the request data. The use of this method suppose that your request is correctly formatted. If not, you can use the $exceptFromSaving and $addToSaving attributes to do so. |
+| createMultipleFromArray(array $data) | Create one or more model instances from data array. |
+| createOrUpdateFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []) | Create or update a model instance from the request data. The use of this method suppose that your request is correctly formatted. If not, you can use the $exceptFromSaving and $addToSaving attributes to do so. |
+| createOrUpdateFromArray(array $data) | Create or update a model instance from array data. The use of this method suppose that your array is correctly formatted. |
+| getModelPrimaryFromArray(array $data) | Get model primary value from a data array. |
+| updateFromPrimary(int $instancePrimary, array $data) | Update a model instance from its primary key. |
+| deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []) | Destroy a model instance from the request data. |
+| deleteFromArray(array $data) | Delete a model instance from a data array. |
+| deleteFromPrimary(int $instancePrimary) | Delete a model instance from its primary key. |
+| deleteMultipleFromPrimaries(array $instancePrimaries) | Delete multiple model instances from their primary keys. |
+| paginateArrayResults(array $data, int $perPage = 20) | Paginate array results. |
+| findOneFromPrimary(int $instancePrimary) | Find one model instance from its primary key value. |
+| findOneFromArray(array $data) | Find one model instance from a « where » parameters array. |
+| findMultipleFromArray(array $data) | Find multiple model instance from a « where » parameters array. |
+| getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc') | Get all model instances from database. |

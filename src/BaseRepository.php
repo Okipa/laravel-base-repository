@@ -68,7 +68,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Create one or more model instances from the request data.
+     * Create multiple model instances from the request data.
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
@@ -154,7 +154,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Create or update a model instance from array data.
+     * Create or update a model instance from data array.
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
@@ -172,7 +172,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Get model primary value from array.
+     * Get model primary value from a data array.
      *
      * @param array $data
      *
@@ -184,7 +184,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Update a model instance from its primary key
+     * Update a model instance from its primary key.
      *
      * @param int   $instancePrimary
      * @param array $data
@@ -200,7 +200,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Destroy a model instance from the request data.
+     * Delete a model instance from the request data.
      *
      * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
@@ -216,6 +216,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
+     * Delete a model instance from a data array.
+     * 
      * @param array $data
      *
      * @return bool
@@ -229,7 +231,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Delete a model instance from its primary key
+     * Delete a model instance from its primary key.
      *
      * @param int $instancePrimary
      *
@@ -261,7 +263,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return LengthAwarePaginator
      */
-    public function paginateArrayResults(array $data, int $perPage = 50)
+    public function paginateArrayResults(array $data, int $perPage = 20)
     {
         $page = $this->request->input('page', 1);
         $offset = ($page * $perPage) - $perPage;
