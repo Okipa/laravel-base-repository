@@ -162,7 +162,7 @@ class Controller extends BaseController
 }
 ```
 
-And you're done !
+And you're done !  
 You can now use your UserRepository, empowered with the pre-defined methods provided by this package.
 
 ------------------------------------------------------------------------------------------------------------------------
