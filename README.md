@@ -217,7 +217,8 @@ class UsersController extends Controller
 
 ### Public methods
 
-- `setModel(string $modelClass)` : set the repository model class to instantiate.
+- `setModel(string $modelClass)`
+    > set the repository model class to instantiate.
 - `setRequest(\Illuminate\Http\Request $request)` : set the repository request to use.
 - `createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])` : create multiple model instances from the request data. The use of this method suppose that your request is correctly formatted. If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
 - `createMultipleFromArray(array $data)` : create one or more model instances from data array.
