@@ -77,7 +77,7 @@ interface BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Exception
      */
-    public function updateFromPrimary(int $instancePrimary, array $data);
+    public function updateByPrimary(int $instancePrimary, array $data);
 
     /**
      * Destroy a model instance from the request data.
@@ -105,7 +105,7 @@ interface BaseRepositoryInterface
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteFromPrimary(int $instancePrimary);
+    public function deleteByPrimary(int $instancePrimary);
 
     /**
      * Delete multiple model instances from their primary keys.
@@ -134,7 +134,7 @@ interface BaseRepositoryInterface
      * @return mixed
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findOneFromPrimary(int $instancePrimary);
+    public function findOneByPrimary(int $instancePrimary);
 
     /**
      * Find one model instance from an associative array.
@@ -144,7 +144,7 @@ interface BaseRepositoryInterface
      * @return mixed
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findOneFromArray(array $data);
+    public function findOneFromArray(array $data, $throwsExceptionIfNotFound = true);
 
     /**
      * Find multiple model instance from an associative array.

@@ -167,7 +167,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $primary = $this->getModelPrimaryFromArray($data);
 
         return $primary
-            ? $this->updateFromPrimary($primary, $data)
+            ? $this->updateByPrimary($primary, $data)
             : $this->model->create($data);
     }
 
@@ -192,11 +192,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return Model
      * @throws \Exception
      */
-    public function updateFromPrimary(int $instancePrimary, array $data)
+    public function updateByPrimary(int $instancePrimary, array $data)
     {
         $instance = $this->model->findOrFail($instancePrimary);
         $instance->update($data);
-        
+
         return $instance->fresh();
     }
 
@@ -239,7 +239,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteFromPrimary(int $instancePrimary)
+    public function deleteByPrimary(int $instancePrimary)
     {
         return $this->model->findOrFail($instancePrimary)->delete();
     }
@@ -284,27 +284,31 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Find one model instance from its primary key value.
      *
-     * @param int $instancePrimary
+     * @param int  $instancePrimary
+     * @param bool $throwsExceptionIfNotFound
      *
      * @return mixed
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findOneFromPrimary(int $instancePrimary)
+    public function findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true)
     {
-        return $this->model->findOrFail($instancePrimary);
+        return $throwsExceptionIfNotFound
+            ? $this->model->findOrFail($instancePrimary)
+            : $this->model->find($instancePrimary);
     }
 
     /**
      * Find one model instance from an associative array.
      *
      * @param array $data
+     * @param bool  $throwsExceptionIfNotFound
      *
      * @return mixed
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findOneFromArray(array $data)
+    public function findOneFromArray(array $data, $throwsExceptionIfNotFound = true)
     {
-        return $this->model->where($data)->firstOrFail();
+        return $throwsExceptionIfNotFound
+            ? $this->model->where($data)->firstOrFail()
+            : $this->model->where($data)->first();
     }
 
     /**
@@ -333,5 +337,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $orderBy = $orderBy === 'default' ? $this->model->getKeyName() : $orderBy;
 
         return $this->model->orderBy($orderBy, $orderByDirection)->get($columns);
+    }
+
+    /**
+     * Instantiate a model instance with an attributes array.
+     *
+     * @param array $data
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function make(array $data)
+    {
+        return app($this->model->getMorphClass())->fill($data);
     }
 }

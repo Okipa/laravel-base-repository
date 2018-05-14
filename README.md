@@ -23,6 +23,7 @@ Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-
 **Notes :**
 - This base repository does **NOT** allow you to manipulate the model : it can sometimes be tempting to directly manipulate the model from your controller but this is not recommended and recognized as a bad practice.
 - You should always fill your repositories interfaces : it can avoid huge errors on your projects.
+- The provided methods are shortcuts to avoid you to declare them in your own base repository or in several repositories. Keep in mind that they only are pre-defined methods and that you should declare new methods in your repositories if they does not fit with your needs.
 
 ## Installation
 The repository pattern setup is not complicated but requires several steps to be accomplished.  
@@ -240,24 +241,26 @@ class UsersController extends Controller
     > Create multiple model instances from the request data.  
     > The use of this method suppose that your request is correctly formatted.  
     > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
-- `updateFromPrimary(int $instancePrimary, array $data)`
+- `updateByPrimary(int $instancePrimary, array $data)`
     > Update a model instance from its primary key.
 - `deleteFromArray(array $data)`
     > Delete a model instance from a data array.
 - `deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
     > Destroy a model instance from the request data.
-- `deleteFromPrimary(int $instancePrimary)`
+- `deleteByPrimary(int $instancePrimary)`
     > Delete a model instance from its primary key.
 - `deleteMultipleFromPrimaries(array $instancePrimaries)`
     > Delete multiple model instances from their primary keys.
 - `paginateArrayResults(array $data, int $perPage = 20)`
     > Paginate array results.
-- `findOneFromPrimary(int $instancePrimary)`
+- `findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true)`
     > Find one model instance from its primary key value.
-- `findOneFromArray(array $data)`
+- `findOneFromArray(array $data, $throwsExceptionIfNotFound = true)`
     > Find one model instance from an associative array.
 - `findMultipleFromArray(array $data)`
     > Find multiple model instance from an associative array.
 - `getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')`
     > Get all model instances from database.
+- `make(array $data)`
+    > Instantiate a model instance with an attributes array.
 

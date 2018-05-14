@@ -112,12 +112,12 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->assertEmpty(app(User::class)->all());
     }
 
-    public function testUpdateFromPrimary()
+    public function testUpdateByPrimary()
     {
         $user = $this->createUniqueUser();
         $user->name = 'Jean';
         $user->remember_token = 'token';
-        $updatedUser = $this->repository->updateFromPrimary($user->id, [
+        $updatedUser = $this->repository->updateByPrimary($user->id, [
             'name'           => 'Jean',
             'remember_token' => 'token',
         ]);
@@ -127,16 +127,54 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->assertEquals('token', $updatedUser->remember_token);
     }
 
-    public function testDeleteFromPrimary()
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @expectedExceptionMessage No query results for model [Okipa\LaravelBaseRepository\Test\Models\User] 1
+     */
+    public function testUpdateByPrimaryFail()
+    {
+        $this->repository->updateByPrimary(1, []);
+    }
+
+    public function testDeleteFromArray()
     {
         $user = $this->createUniqueUser();
         $user->remember_token = null;
-        $this->assertEquals([$user->toArray()], app(User::class)->all()->toArray());
-        $this->repository->deleteFromPrimary($user->id);
-        $this->assertEmpty(app(User::class)->all());
+        $this->assertEquals($user->toArray(), app(User::class)->find($user->id)->toArray());
+        $status = $this->repository->deleteFromArray(['id' => $user->id]);
+        $this->assertTrue($status);
+        $this->assertEmpty(app(User::class)->find($user->id));
     }
 
-    public function testDeleteAnotherModelFromPrimary()
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @expectedExceptionMessage No query results for model [Okipa\LaravelBaseRepository\Test\Models\User] 1
+     */
+    public function testDeleteFromArrayFail()
+    {
+        $this->repository->deleteFromArray(['id' => 1]);
+    }
+    
+    public function testDeleteByPrimary()
+    {
+        $user = $this->createUniqueUser();
+        $user->remember_token = null;
+        $this->assertEquals($user->toArray(), app(User::class)->find($user->id)->toArray());
+        $status = $this->repository->deleteByPrimary($user->id);
+        $this->assertTrue($status);
+        $this->assertEmpty(app(User::class)->find($user->id));
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @expectedExceptionMessage No query results for model [Okipa\LaravelBaseRepository\Test\Models\User] 1
+     */
+    public function testDeleteByPrimaryFail()
+    {
+        $this->repository->deleteByPrimary(1);
+    }
+
+    public function testDeleteAnotherModelByPrimary()
     {
         $user = $this->createUniqueUser();
         $company = $this->createUniqueCompany();
@@ -146,7 +184,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->assertEquals([$user->toArray()], app(User::class)->all()->toArray());
         $this->assertEquals([$company->toArray()], app(Company::class)->all()->toArray());
         $this->repository->setModel(Company::class);
-        $this->repository->deleteFromPrimary($company->id);
+        $this->repository->deleteByPrimary($company->id);
         $this->assertEquals([$user->toArray()], app(User::class)->all()->toArray());
         $this->assertEmpty(app(Company::class)->all());
     }
@@ -211,12 +249,27 @@ class TableListColumnTest extends BaseRepositoryTestCase
         );
     }
 
-    public function testFindOneFromPrimary()
+    public function testFindOneByPrimary()
     {
         $this->createMultipleUsers(5);
         $user = app(User::class)->find(rand(1, 5));
-        $foundUser = $this->repository->findOneFromPrimary($user->id);
+        $foundUser = $this->repository->findOneByPrimary($user->id);
         $this->assertEquals($user, $foundUser);
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @expectedExceptionMessage No query results for model [Okipa\LaravelBaseRepository\Test\Models\User] 1
+     */
+    public function testFindOneByPrimaryFail()
+    {
+        $this->repository->findOneByPrimary(1);
+    }
+
+    public function testFindOneByPrimaryNull()
+    {
+        $user = $this->repository->findOneByPrimary(1, false);
+        $this->assertNull($user);
     }
 
     public function testFindOneFromArray()
@@ -234,6 +287,12 @@ class TableListColumnTest extends BaseRepositoryTestCase
     public function testFindOneFromArrayFail()
     {
         $this->repository->findOneFromArray(['id' => 1]);
+    }
+
+    public function testFindOneFromArrayNull()
+    {
+        $user = $this->repository->findOneFromArray(['id' => 1], false);
+        $this->assertNull($user);
     }
 
     public function testFindMultipleFromArray()
@@ -255,5 +314,16 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $users = $users->sortByDesc('name')->pluck('name');
         $foundUsers = $this->repository->getAll(['name'], 'name', 'desc')->pluck('name');
         $this->assertEquals($users, $foundUsers);
+    }
+    
+    public function testMake()
+    {
+        $data = $this->generateFakeUserData();
+        $user = $this->repository->make($data);
+        $this->assertEquals($data['name'], $user->name);
+        $this->assertEquals($data['email'], $user->email);
+        $this->assertEquals($data['password'], $user->password);
+        $otherUser = $this->repository->make($data);
+        $this->assertNotEquals(spl_object_hash($user), spl_object_hash($otherUser));
     }
 }
