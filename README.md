@@ -21,7 +21,7 @@ You can know more about it by reading the several articles you'll can find on In
 Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd.
 
 **Notes :**
-- This baseRepository does **NOT** allow you to manipulate directory the model : it can be sometimes tempting to directly manipulate the model from your controller but this is not recommended and recognized as a bad practice.
+- This base repository does **NOT** allow you to manipulate the model : it can sometimes be tempting to directly manipulate the model from your controller but this is not recommended and recognized as a bad practice.
 - You should always fill your repositories interfaces : it can avoid huge errors on your projects.
 
 ## Installation
