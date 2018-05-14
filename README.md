@@ -223,27 +223,25 @@ class UsersController extends Controller
     > Set the repository model class to instantiate.
 - `setRequest(\Illuminate\Http\Request $request)`
     > Set the repository request to use.
-- `createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > Create multiple model instances from the request data.  
-    > The use of this method suppose that your request is correctly formatted.  
-    > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
-- `createMultipleFromArray(array $data)`
-    > Create one or more model instances from data array.
+- `createOrUpdateFromArray(array $data)`
+    > Create or update a model instance from array data.  
+    > The use of this method suppose that your array is correctly formatted.
 - `createOrUpdateFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
     > Create or update a model instance from the request data.  
     > The use of this method suppose that your request is correctly formatted.  
     > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
-- `createOrUpdateFromArray(array $data)`
-    > Create or update a model instance from array data.  
-    > The use of this method suppose that your array is correctly formatted.
-- `getModelPrimaryFromArray(array $data)`
-    > Get model primary value from a data array.
+- `createMultipleFromArray(array $data)`
+    > Create one or more model instances from data array.
+- `createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
+    > Create multiple model instances from the request data.  
+    > The use of this method suppose that your request is correctly formatted.  
+    > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
 - `updateFromPrimary(int $instancePrimary, array $data)`
     > Update a model instance from its primary key.
-- `deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > Destroy a model instance from the request data.
 - `deleteFromArray(array $data)`
     > Delete a model instance from a data array.
+- `deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
+    > Destroy a model instance from the request data.
 - `deleteFromPrimary(int $instancePrimary)`
     > Delete a model instance from its primary key.
 - `deleteMultipleFromPrimaries(array $instancePrimaries)`
