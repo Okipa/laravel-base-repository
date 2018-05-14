@@ -218,37 +218,42 @@ class UsersController extends Controller
 ### Public methods
 
 - `setModel(string $modelClass)`
-    > set the repository model class to instantiate.
+    > Set the repository model class to instantiate.
 - `setRequest(\Illuminate\Http\Request $request)`
-    > set the repository request to use.
+    > Set the repository request to use.
 - `createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > create multiple model instances from the request data. The use of this method suppose that your request is correctly formatted. If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
+    > Create multiple model instances from the request data.  
+    > The use of this method suppose that your request is correctly formatted.  
+    > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
 - `createMultipleFromArray(array $data)`
-    > create one or more model instances from data array.
+    > Create one or more model instances from data array.
 - `createOrUpdateFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > create or update a model instance from the request data. The use of this method suppose that your request is correctly formatted. If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
+    > Create or update a model instance from the request data.  
+    > The use of this method suppose that your request is correctly formatted.  
+    > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
 - `createOrUpdateFromArray(array $data)`
-    > create or update a model instance from array data. The use of this method suppose that your array is correctly formatted.
+    > Create or update a model instance from array data.  
+    > The use of this method suppose that your array is correctly formatted.
 - `getModelPrimaryFromArray(array $data)`
-    > get model primary value from a data array.
+    > Get model primary value from a data array.
 - `updateFromPrimary(int $instancePrimary, array $data)`
-    > update a model instance from its primary key.
+    > Update a model instance from its primary key.
 - `deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > destroy a model instance from the request data.
+    > Destroy a model instance from the request data.
 - `deleteFromArray(array $data)`
-    > delete a model instance from a data array.
+    > Delete a model instance from a data array.
 - `deleteFromPrimary(int $instancePrimary)`
-    > delete a model instance from its primary key.
+    > Delete a model instance from its primary key.
 - `deleteMultipleFromPrimaries(array $instancePrimaries)`
-    > delete multiple model instances from their primary keys.
+    > Delete multiple model instances from their primary keys.
 - `paginateArrayResults(array $data, int $perPage = 20)`
-    > paginate array results.
+    > Paginate array results.
 - `findOneFromPrimary(int $instancePrimary)`
-    > find one model instance from its primary key value.
+    > Find one model instance from its primary key value.
 - `findOneFromArray(array $data)`
-    > find one model instance from a « where » parameters array.
+    > Find one model instance from a « where » parameters array.
 - `findMultipleFromArray(array $data)`
-    > find multiple model instance from a « where » parameters array.
+    > Find multiple model instance from a « where » parameters array.
 - `getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')`
-    > get all model instances from database.
+    > Get all model instances from database.
 
