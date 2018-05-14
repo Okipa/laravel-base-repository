@@ -20,6 +20,10 @@ Before using this package, you should be familiar with the repository pattern, a
 You can know more about it by reading the several articles you'll can find on Internet about this.  
 Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd.
 
+**Notes :**
+- This baseRepository does **NOT** allow you to manipulate directory the model : it can be sometimes tempting to directly manipulate the model from your controller but this is not recommended and recognized as a bad practice.
+- You should always fill your repositories interfaces : it can avoid huge errors on your projects.
+
 ## Installation
 The repository pattern setup is not complicated but requires several steps to be accomplished.  
 Follow them one by one :
@@ -251,9 +255,9 @@ class UsersController extends Controller
 - `findOneFromPrimary(int $instancePrimary)`
     > Find one model instance from its primary key value.
 - `findOneFromArray(array $data)`
-    > Find one model instance from a « where » parameters array.
+    > Find one model instance from an associative array.
 - `findMultipleFromArray(array $data)`
-    > Find multiple model instance from a « where » parameters array.
+    > Find multiple model instance from an associative array.
 - `getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')`
     > Get all model instances from database.
 

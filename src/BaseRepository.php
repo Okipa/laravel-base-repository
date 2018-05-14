@@ -295,7 +295,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Find one model instance from a « where » parameters array.
+     * Find one model instance from an associative array.
      *
      * @param array $data
      *
@@ -316,7 +316,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function findMultipleFromArray(array $data)
     {
-        return $this->model->where($data)->all();
+        return $this->model->where($data)->get();
     }
 
     /**

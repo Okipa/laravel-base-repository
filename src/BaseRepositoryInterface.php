@@ -137,7 +137,7 @@ interface BaseRepositoryInterface
     public function findOneFromPrimary(int $instancePrimary);
 
     /**
-     * Find one model instance from a « where » parameters array.
+     * Find one model instance from an associative array.
      *
      * @param array $data
      *
@@ -147,7 +147,7 @@ interface BaseRepositoryInterface
     public function findOneFromArray(array $data);
 
     /**
-     * Find multiple model instance from a « where » parameters array.
+     * Find multiple model instance from an associative array.
      *
      * @param array $data
      *

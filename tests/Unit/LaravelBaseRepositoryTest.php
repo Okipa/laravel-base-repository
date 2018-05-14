@@ -3,6 +3,7 @@
 namespace Okipa\LaravelBaseRepository\Test\Unit;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Okipa\LaravelBaseRepository\Test\BaseRepositoryTestCase;
 use Okipa\LaravelBaseRepository\Test\Fakers\CompaniesFaker;
 use Okipa\LaravelBaseRepository\Test\Fakers\UsersFaker;
@@ -10,7 +11,6 @@ use Okipa\LaravelBaseRepository\Test\Models\Company;
 use Okipa\LaravelBaseRepository\Test\Models\User;
 use Okipa\LaravelBaseRepository\Test\Repositories\CompanyRepositoryWithCustomDefaultAttributesToExcept;
 use Okipa\LaravelBaseRepository\Test\Repositories\CompanyRepositoryWithDisabledDefaultAttributesException;
-use PDOException;
 
 class TableListColumnTest extends BaseRepositoryTestCase
 {
@@ -176,7 +176,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
     }
 
     /**
-     * @expectedException PDOException
+     * @expectedException \PDOException
      * @expectedExceptionMessage Integrity constraint violation: 19 NOT NULL constraint failed: companies.name
      */
     public function testCustomizeDefaultAttributesToExcept()
@@ -189,5 +189,71 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $request = Request::create('test', 'GET', $data);
         $this->repository->setRequest($request);
         $this->repository->createOrUpdateFromRequest();
+    }
+
+    public function testPaginateArrayResults()
+    {
+        $users = $this->createMultipleUsers(35);
+        $paginatedUsersPageOne = $this->repository->paginateArrayResults($users->toArray(), 20);
+        $this->assertCount(20, $paginatedUsersPageOne);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginatedUsersPageOne);
+
+        $request = Request::create('test', 'GET', [
+            'page' => 2,
+        ]);
+        $this->repository->setRequest($request);
+        $paginatedUsersPageTwo = $this->repository->paginateArrayResults($users->toArray(), 20);
+        $this->assertCount(15, $paginatedUsersPageTwo);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginatedUsersPageTwo);
+        $this->assertCount(
+            20,
+            array_diff($paginatedUsersPageOne->pluck('id')->toArray(), $paginatedUsersPageTwo->pluck('id')->toArray())
+        );
+    }
+
+    public function testFindOneFromPrimary()
+    {
+        $this->createMultipleUsers(5);
+        $user = app(User::class)->find(rand(1, 5));
+        $foundUser = $this->repository->findOneFromPrimary($user->id);
+        $this->assertEquals($user, $foundUser);
+    }
+
+    public function testFindOneFromArray()
+    {
+        $this->createMultipleUsers(5);
+        $user = app(User::class)->find(rand(1, 5));
+        $foundUser = $this->repository->findOneFromArray(['id' => $user->id]);
+        $this->assertEquals($user, $foundUser);
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @expectedExceptionMessage No query results for model [Okipa\LaravelBaseRepository\Test\Models\User].
+     */
+    public function testFindOneFromArrayFail()
+    {
+        $this->repository->findOneFromArray(['id' => 1]);
+    }
+
+    public function testFindMultipleFromArray()
+    {
+        $data = $this->generateFakeUserData();
+        app(User::class)->create($data);
+        $data['email'] = $this->faker->email;
+        app(User::class)->create($data);
+        $users = $this->repository->findMultipleFromArray([
+            'name'           => $data['name'],
+            'remember_token' => null,
+        ]);
+        $this->assertCount(2, $users);
+    }
+
+    public function testGetAll()
+    {
+        $users = $this->createMultipleUsers(15);
+        $users = $users->sortByDesc('name')->pluck('name');
+        $foundUsers = $this->repository->getAll(['name'], 'name', 'desc')->pluck('name');
+        $this->assertEquals($users, $foundUsers);
     }
 }
