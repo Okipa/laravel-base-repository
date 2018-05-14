@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-abstract class BaseRepository
+abstract class BaseRepository implements BaseRepositoryInterface
 {
     /**
      * The repository associated main model.
@@ -279,6 +279,8 @@ abstract class BaseRepository
     }
 
     /**
+     * Find one model instance from its primary key value.
+     *
      * @param int $instancePrimary
      *
      * @return mixed
@@ -290,6 +292,8 @@ abstract class BaseRepository
     }
 
     /**
+     * Find one model instance from a « where » parameters array.
+     *
      * @param array $data
      *
      * @return mixed
@@ -301,6 +305,8 @@ abstract class BaseRepository
     }
 
     /**
+     * Find multiple model instance from a « where » parameters array.
+     *
      * @param array $data
      *
      * @return mixed
@@ -311,14 +317,18 @@ abstract class BaseRepository
     }
 
     /**
+     * Get all model instances from database.
+     *
      * @param array  $columns
      * @param string $orderBy
-     * @param string $sortBy
+     * @param string $orderByDirection
      *
      * @return mixed
      */
-    public function getAll($columns = ['*'], string $orderBy = 'id', string $sortBy = 'asc')
+    public function getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')
     {
-        return $this->model->orderBy($orderBy, $sortBy)->get($columns);
+        $orderBy = $orderBy === 'default' ? $this->model->getKeyName() : $orderBy;
+
+        return $this->model->orderBy($orderBy, $orderByDirection)->get($columns);
     }
 }

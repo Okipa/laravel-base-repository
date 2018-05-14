@@ -12,8 +12,11 @@ An abstract base repository with predefined common features.
 ------------------------------------------------------------------------------------------------------------------------
 
 ## Before starting
-You should be familiar with the repository pattern, and especially with its Laravel implementation.  
-You can know more about this with this article : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd
+The repository pattern has several objectives :
+- Encourage development good practices (separation of concerns, code reusability, ...)
+- Improve code testability
+Before using this package, you should be familiar with the repository pattern, and especially with its Laravel implementation.
+You can know more about it by reading the several articles you'll can find about this. Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd
 
 ## Installation
 - Install the package with composer :
@@ -50,7 +53,7 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         // users
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        
+
         // then, register all your other repositories here ...
     }
 }
@@ -62,7 +65,7 @@ class RepositoryServiceProvider extends ServiceProvider
 
 'providers' => [
     // other provider declarations ...
-    
+
     // custom providers
     App\Providers\RepositoryServiceProvider::class,
 ],
