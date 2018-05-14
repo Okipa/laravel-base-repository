@@ -15,6 +15,7 @@ An abstract base repository with predefined common features.
 The repository pattern has several objectives :
 - Encourage development good practices (separation of concerns, code reusability, ...)
 - Improve code testability
+
 Before using this package, you should be familiar with the repository pattern, and especially with its Laravel implementation.
 You can know more about it by reading the several articles you'll can find about this. Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd
 
