@@ -18,10 +18,10 @@ The repository pattern has several objectives :
 
 Before using this package, you should be familiar with the repository pattern, and especially with its Laravel implementation.  
 You can know more about it by reading the several articles you'll can find on Internet about this.  
-Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd
+Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-in-laravel-a92dd48f2cdd.
 
 ## Installation
-The repository pattern setup is not complicated but requires several steps to be accomplished.
+The repository pattern setup is not complicated but requires several steps to be accomplished.  
 Follow them one by one :
 
 - Install the package with composer :
