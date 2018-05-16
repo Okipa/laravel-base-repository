@@ -175,6 +175,7 @@ You can now use your UserRepository, empowered with the pre-defined methods prov
 ------------------------------------------------------------------------------------------------------------------------
 
 ## Usage
+
 In your `app/Http/Controllers/Users/UsersController.php`, manipulate your `UserRepository` as in the example bellow :
 ```php
 <?php
