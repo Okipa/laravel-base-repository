@@ -25,6 +25,8 @@ Here is one among others : https://medium.com/@jsdecena/refactor-the-simple-tdd-
 - You should always fill your repositories interfaces : it can avoid huge errors on your projects.
 - The provided methods are shortcuts to avoid you to declare them in your own base repository or in several repositories. Keep in mind that they only are pre-defined methods and that you should declare new methods in your repositories if they does not fit with your needs.
 
+------------------------------------------------------------------------------------------------------------------------
+
 ## Installation
 The repository pattern setup is not complicated but requires several steps to be accomplished.  
 Follow them one by one :
