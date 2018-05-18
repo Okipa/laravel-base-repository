@@ -44,7 +44,7 @@ composer require okipa/laravel-base-repository
 
 namespace App\Repositories;
 
-interface BaseRepositoryInterface
+interface BaseRepositoryInterface extends Okipa\LaravelBaseRepository\BaseRepositoryInterface
 {
     // add here your own custom method contracts (if necessary).
     // they will be implemented in all your repositories.
@@ -187,7 +187,7 @@ use App\Repositories\Users\UserRepositoryInterface;
 
 class UsersController extends Controller
 {
-    /**
+    /**BaseRepositoryInterface
      * UsersController constructor.
      *
      * @param \App\Repositories\Users\UserRepositoryInterface $repository
