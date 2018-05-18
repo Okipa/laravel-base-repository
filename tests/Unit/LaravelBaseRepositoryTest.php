@@ -11,6 +11,7 @@ use Okipa\LaravelBaseRepository\Test\Models\Company;
 use Okipa\LaravelBaseRepository\Test\Models\User;
 use Okipa\LaravelBaseRepository\Test\Repositories\CompanyRepositoryWithCustomDefaultAttributesToExcept;
 use Okipa\LaravelBaseRepository\Test\Repositories\CompanyRepositoryWithDisabledDefaultAttributesException;
+use Okipa\LaravelBaseRepository\Test\Repositories\UserRepositoryWithNoModel;
 
 class TableListColumnTest extends BaseRepositoryTestCase
 {
@@ -154,7 +155,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
     {
         $this->repository->deleteFromArray(['id' => 1]);
     }
-    
+
     public function testDeleteByPrimary()
     {
         $user = $this->createUniqueUser();
@@ -315,7 +316,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $foundUsers = $this->repository->getAll(['name'], 'name', 'desc')->pluck('name');
         $this->assertEquals($users, $foundUsers);
     }
-    
+
     public function testMake()
     {
         $data = $this->generateFakeUserData();
@@ -325,5 +326,17 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->assertEquals($data['password'], $user->password);
         $otherUser = $this->repository->make($data);
         $this->assertNotEquals(spl_object_hash($user), spl_object_hash($otherUser));
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage You must declare your repository $model attribute with an
+     *                           Illuminate\Database\Eloquent\Model namespace to use this feature.
+     */
+    public function testRepositoryInstanciationWithNoModel()
+    {
+        $repository = app(UserRepositoryWithNoModel::class);
+        $data = $this->generateFakeUserData();
+        $repository->make($data);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Okipa\LaravelBaseRepository;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -39,22 +40,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function __construct()
     {
-        $this->setModel($this->model);
-        $this->setRequest(request());
-    }
-
-    /**
-     * Set the repository model class to instantiate.
-     *
-     * @param string $modelClass
-     *
-     * @return $this
-     */
-    public function setModel(string $modelClass)
-    {
-        $this->model = app($modelClass);
-
-        return $this;
+        if ($this->model) {
+            $this->setModel($this->model);
+            $this->setRequest(request());
+        }
     }
 
     /**
@@ -76,6 +65,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Exception
      */
     public function createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
     {
@@ -123,15 +113,44 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Exception
      */
     public function createMultipleFromArray(array $data)
     {
         $models = new Collection();
         foreach ($data as $instanceData) {
-            $models->push($this->model->create($instanceData));
+            $models->push($this->getModel()->create($instanceData));
         }
 
         return $models;
+    }
+
+    /**
+     * Get the repository model.
+     *
+     * @return \Exception|\Illuminate\Database\Eloquent\Model
+     * @throws \Exception
+     */
+    protected function getModel()
+    {
+        if ($this->model instanceof Model) {
+            return $this->model;
+        }
+        throw new Exception('You must declare your repository $model attribute with an Illuminate\Database\Eloquent\Model namespace to use this feature.');
+    }
+
+    /**
+     * Set the repository model class to instantiate.
+     *
+     * @param string $modelClass
+     *
+     * @return $this
+     */
+    public function setModel(string $modelClass)
+    {
+        $this->model = app($modelClass);
+
+        return $this;
     }
 
     /**
@@ -168,7 +187,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
         return $primary
             ? $this->updateByPrimary($primary, $data)
-            : $this->model->create($data);
+            : $this->getModel()->create($data);
     }
 
     /**
@@ -177,10 +196,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return mixed
+     * @throws \Exception
      */
     protected function getModelPrimaryFromArray(array $data)
     {
-        return array_get($data, $this->model->getKeyName());
+        return array_get($data, $this->getModel()->getKeyName());
     }
 
     /**
@@ -194,7 +214,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function updateByPrimary(int $instancePrimary, array $data)
     {
-        $instance = $this->model->findOrFail($instancePrimary);
+        $instance = $this->getModel()->findOrFail($instancePrimary);
         $instance->update($data);
 
         return $instance->fresh();
@@ -207,6 +227,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return bool|null
+     * @throws \Exception
      */
     public function deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
     {
@@ -223,12 +244,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return bool
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
      */
     public function deleteFromArray(array $data)
     {
         $primary = $this->getModelPrimaryFromArray($data);
 
-        return $this->model->findOrFail($primary)->delete();
+        return $this->getModel()->findOrFail($primary)->delete();
     }
 
     /**
@@ -238,10 +260,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
      */
     public function deleteByPrimary(int $instancePrimary)
     {
-        return $this->model->findOrFail($instancePrimary)->delete();
+        return $this->getModel()->findOrFail($instancePrimary)->delete();
     }
 
     /**
@@ -250,10 +273,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $instancePrimaries
      *
      * @return int
+     * @throws \Exception
      */
     public function deleteMultipleFromPrimaries(array $instancePrimaries)
     {
-        return $this->model->destroy($instancePrimaries);
+        return $this->getModel()->destroy($instancePrimaries);
     }
 
     /**
@@ -288,12 +312,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param bool $throwsExceptionIfNotFound
      *
      * @return mixed
+     * @throws \Exception
      */
     public function findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true)
     {
         return $throwsExceptionIfNotFound
-            ? $this->model->findOrFail($instancePrimary)
-            : $this->model->find($instancePrimary);
+            ? $this->getModel()->findOrFail($instancePrimary)
+            : $this->getModel()->find($instancePrimary);
     }
 
     /**
@@ -303,12 +328,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param bool  $throwsExceptionIfNotFound
      *
      * @return mixed
+     * @throws \Exception
      */
     public function findOneFromArray(array $data, $throwsExceptionIfNotFound = true)
     {
         return $throwsExceptionIfNotFound
-            ? $this->model->where($data)->firstOrFail()
-            : $this->model->where($data)->first();
+            ? $this->getModel()->where($data)->firstOrFail()
+            : $this->getModel()->where($data)->first();
     }
 
     /**
@@ -317,10 +343,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return mixed
+     * @throws \Exception
      */
     public function findMultipleFromArray(array $data)
     {
-        return $this->model->where($data)->get();
+        return $this->getModel()->where($data)->get();
     }
 
     /**
@@ -331,12 +358,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param string $orderByDirection
      *
      * @return mixed
+     * @throws \Exception
      */
     public function getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')
     {
-        $orderBy = $orderBy === 'default' ? $this->model->getKeyName() : $orderBy;
+        $orderBy = $orderBy === 'default' ? $this->getModel()->getKeyName() : $orderBy;
 
-        return $this->model->orderBy($orderBy, $orderByDirection)->get($columns);
+        return $this->getModel()->orderBy($orderBy, $orderByDirection)->get($columns);
     }
 
     /**
@@ -345,9 +373,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Exception
      */
     public function make(array $data)
     {
-        return app($this->model->getMorphClass())->fill($data);
+        return app($this->getModel()->getMorphClass())->fill($data);
     }
 }
