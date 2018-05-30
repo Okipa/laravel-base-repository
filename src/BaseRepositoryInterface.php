@@ -3,7 +3,6 @@
 namespace Okipa\LaravelBaseRepository;
 
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 interface BaseRepositoryInterface
 {
@@ -12,7 +11,7 @@ interface BaseRepositoryInterface
      *
      * @param string $modelClass
      *
-     * @return $this
+     * @return \Okipa\LaravelBaseRepository\BaseRepository
      */
     public function setModel(string $modelClass);
 
@@ -20,11 +19,13 @@ interface BaseRepositoryInterface
      * Set the repository request to use.
      *
      * @param \Illuminate\Http\Request $request
+     *
+     * @return \Okipa\LaravelBaseRepository\BaseRepository
      */
     public function setRequest(Request $request);
 
     /**
-     * Create one or more model instances from the request data.
+     * Create multiple model instances from the request data.
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
@@ -32,6 +33,7 @@ interface BaseRepositoryInterface
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []);
 
@@ -41,6 +43,7 @@ interface BaseRepositoryInterface
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createMultipleFromArray(array $data);
 
@@ -53,43 +56,46 @@ interface BaseRepositoryInterface
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []);
 
     /**
-     * Create or update a model instance from array data.
+     * Create or update a model instance from data array.
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateFromArray(array $data);
 
     /**
-     * Update a model instance from its primary key
+     * Update a model instance from its primary key.
      *
      * @param int   $instancePrimary
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function updateByPrimary(int $instancePrimary, array $data);
 
     /**
-     * Destroy a model instance from the request data.
+     * Delete a model instance from the request data.
      *
      * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return bool|null
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []);
 
     /**
+     * Delete a model instance from a data array.
+     *
      * @param array $data
      *
      * @return bool
@@ -98,7 +104,7 @@ interface BaseRepositoryInterface
     public function deleteFromArray(array $data);
 
     /**
-     * Delete a model instance from its primary key
+     * Delete a model instance from its primary key.
      *
      * @param int $instancePrimary
      *
@@ -113,6 +119,7 @@ interface BaseRepositoryInterface
      * @param array $instancePrimaries
      *
      * @return int
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function deleteMultipleFromPrimaries(array $instancePrimaries);
 
@@ -122,36 +129,39 @@ interface BaseRepositoryInterface
      * @param array $data
      * @param int   $perPage
      *
-     * @return LengthAwarePaginator
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function paginateArrayResults(array $data, int $perPage = 50);
+    public function paginateArrayResults(array $data, int $perPage = 20);
 
     /**
      * Find one model instance from its primary key value.
      *
-     * @param int $instancePrimary
+     * @param int  $instancePrimary
+     * @param bool $throwsExceptionIfNotFound
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findOneByPrimary(int $instancePrimary);
+    public function findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true);
 
     /**
      * Find one model instance from an associative array.
      *
      * @param array $data
+     * @param bool  $throwsExceptionIfNotFound
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function findOneFromArray(array $data, $throwsExceptionIfNotFound = true);
 
     /**
-     * Find multiple model instance from an associative array.
+     * Find multiple model instance from a « where » parameters array.
      *
      * @param array $data
      *
-     * @return mixed
+     * @return array
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function findMultipleFromArray(array $data);
 
@@ -162,7 +172,18 @@ interface BaseRepositoryInterface
      * @param string $orderBy
      * @param string $orderByDirection
      *
-     * @return mixed
+     * @return array
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc');
+
+    /**
+     * Instantiate a model instance with an attributes array.
+     *
+     * @param array $data
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function make(array $data);
 }

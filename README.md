@@ -218,54 +218,9 @@ class UsersController extends Controller
 
 ### Properties
 
-- `protected $model`
-    > The repository associated main model.
-- `protected $request = request()`
-    > The repository associated request.
-- `protected $defaultAttributesToExcept = ['_token', '_method']`
-    > Default attributes to automatically except from request treatments.
-- `protected $exceptDefaultAttributes = true`
-    > Automatically except defined $defaultAttributesToExcept from the request treatments.
+See the protected properties to override in your own repositories in the [BaseRepository](https://github.com/Okipa/laravel-base-repository/blob/master/src/BaseRepository.php).
 
 ### Public methods
 
-- `setModel(string $modelClass)`
-    > Set the repository model class to instantiate.
-- `setRequest(\Illuminate\Http\Request $request)`
-    > Set the repository request to use.
-- `createOrUpdateFromArray(array $data)`
-    > Create or update a model instance from array data.  
-    > The use of this method suppose that your array is correctly formatted.
-- `createOrUpdateFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > Create or update a model instance from the request data.  
-    > The use of this method suppose that your request is correctly formatted.  
-    > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
-- `createMultipleFromArray(array $data)`
-    > Create one or more model instances from data array.
-- `createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > Create multiple model instances from the request data.  
-    > The use of this method suppose that your request is correctly formatted.  
-    > If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
-- `updateByPrimary(int $instancePrimary, array $data)`
-    > Update a model instance from its primary key.
-- `deleteFromArray(array $data)`
-    > Delete a model instance from a data array.
-- `deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])`
-    > Destroy a model instance from the request data.
-- `deleteByPrimary(int $instancePrimary)`
-    > Delete a model instance from its primary key.
-- `deleteMultipleFromPrimaries(array $instancePrimaries)`
-    > Delete multiple model instances from their primary keys.
-- `paginateArrayResults(array $data, int $perPage = 20)`
-    > Paginate array results.
-- `findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true)`
-    > Find one model instance from its primary key value.
-- `findOneFromArray(array $data, $throwsExceptionIfNotFound = true)`
-    > Find one model instance from an associative array.
-- `findMultipleFromArray(array $data)`
-    > Find multiple model instance from an associative array.
-- `getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')`
-    > Get all model instances from database.
-- `make(array $data)`
-    > Instantiate a model instance with an attributes array.
+See the available public methods in the [BaseRepositoryInterface](https://github.com/Okipa/laravel-base-repository/blob/master/src/BaseRepositoryInterface.php).
 

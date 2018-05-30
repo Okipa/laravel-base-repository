@@ -2,9 +2,9 @@
 
 namespace Okipa\LaravelBaseRepository;
 
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -56,7 +56,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function setRequest(Request $request)
     {
         $this->request = $request;
-        
+
         return $this;
     }
 
@@ -69,7 +69,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
     {
@@ -117,7 +117,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createMultipleFromArray(array $data)
     {
@@ -132,15 +132,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Get the repository model.
      *
-     * @return \Exception|\Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     protected function getModel()
     {
         if ($this->model instanceof Model) {
             return $this->model;
         }
-        throw new Exception('You must declare your repository $model attribute with an Illuminate\Database\Eloquent\Model namespace to use this feature.');
+        throw new ModelNotFoundException(
+            'You must declare your repository $model attribute with an Illuminate\Database\Eloquent\Model namespace to use this feature.'
+        );
     }
 
     /**
@@ -148,7 +150,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param string $modelClass
      *
-     * @return $this
+     * @return \Okipa\LaravelBaseRepository\BaseRepository
      */
     public function setModel(string $modelClass)
     {
@@ -166,7 +168,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
     {
@@ -183,7 +185,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateFromArray(array $data)
     {
@@ -200,7 +202,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return mixed
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     protected function getModelPrimaryFromArray(array $data)
     {
@@ -213,8 +215,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param int   $instancePrimary
      * @param array $data
      *
-     * @return Model
-     * @throws \Exception
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function updateByPrimary(int $instancePrimary, array $data)
     {
@@ -231,7 +233,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $attributesToAddOrReplace (dot notation accepted)
      *
      * @return bool|null
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
     {
@@ -248,7 +250,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return bool
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     * @throws \Exception
      */
     public function deleteFromArray(array $data)
     {
@@ -264,7 +265,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     * @throws \Exception
      */
     public function deleteByPrimary(int $instancePrimary)
     {
@@ -277,7 +277,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $instancePrimaries
      *
      * @return int
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function deleteMultipleFromPrimaries(array $instancePrimaries)
     {
@@ -290,7 +290,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      * @param int   $perPage
      *
-     * @return LengthAwarePaginator
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function paginateArrayResults(array $data, int $perPage = 20)
     {
@@ -315,8 +315,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param int  $instancePrimary
      * @param bool $throwsExceptionIfNotFound
      *
-     * @return mixed
-     * @throws \Exception
+     * @return \Illuminate\Database\Eloquent\Model|null
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true)
     {
@@ -331,8 +331,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      * @param bool  $throwsExceptionIfNotFound
      *
-     * @return mixed
-     * @throws \Exception
+     * @return \Illuminate\Database\Eloquent\Model|null
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function findOneFromArray(array $data, $throwsExceptionIfNotFound = true)
     {
@@ -346,8 +346,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $data
      *
-     * @return mixed
-     * @throws \Exception
+     * @return array
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function findMultipleFromArray(array $data)
     {
@@ -361,8 +361,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param string $orderBy
      * @param string $orderByDirection
      *
-     * @return mixed
-     * @throws \Exception
+     * @return array
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')
     {
@@ -377,7 +377,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function make(array $data)
     {
