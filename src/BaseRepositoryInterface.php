@@ -160,7 +160,7 @@ interface BaseRepositoryInterface
      *
      * @param array $data
      *
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function findMultipleFromArray(array $data);
@@ -172,7 +172,7 @@ interface BaseRepositoryInterface
      * @param string $orderBy
      * @param string $orderByDirection
      *
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc');
