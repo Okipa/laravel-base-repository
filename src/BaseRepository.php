@@ -42,8 +42,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         if ($this->model) {
             $this->setModel($this->model);
-            $this->setRequest(request());
         }
+        $this->setRequest(request());
     }
 
     /**
