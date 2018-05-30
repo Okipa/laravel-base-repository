@@ -329,7 +329,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
      * @expectedExceptionMessage You must declare your repository $model attribute with an
      *                           Illuminate\Database\Eloquent\Model namespace to use this feature.
      */
