@@ -50,10 +50,14 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * Set the repository request to use.
      *
      * @param \Illuminate\Http\Request $request
+     *
+     * @return \Okipa\LaravelBaseRepository\BaseRepository
      */
     public function setRequest(Request $request)
     {
         $this->request = $request;
+        
+        return $this;
     }
 
     /**
