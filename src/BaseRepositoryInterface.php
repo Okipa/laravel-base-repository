@@ -35,17 +35,18 @@ interface BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []);
+    public function createOrUpdateMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []);
 
     /**
      * Create one or more model instances from data array.
+     * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createMultipleFromArray(array $data);
+    public function createOrUpdateMultipleFromArray(array $data);
 
     /**
      * Create or update a model instance from the request data.

@@ -25,12 +25,28 @@ class TableListColumnTest extends BaseRepositoryTestCase
             $this->generateFakeUserData(),
             $this->generateFakeUserData(),
         ];
-        $users = $this->repository->createMultipleFromArray($data);
+        $users = $this->repository->createOrUpdateMultipleFromArray($data);
         $this->assertCount(count($data), $users);
         foreach ($data as $key => $user) {
             $this->assertEquals($data[$key]['name'], $users->get($key)->name);
             $this->assertEquals($data[$key]['email'], $users->get($key)->email);
             $this->assertEquals($data[$key]['password'], $users->get($key)->password);
+        }
+    }
+
+    public function testUpdateMultipleFromArray()
+    {
+        $originalUsers = $this->createMultipleUsers(3);
+        $usersUpdatedArray = $originalUsers->toArray();
+        foreach ($usersUpdatedArray as $key => $user) {
+            $usersUpdatedArray[$key]['email'] = $this->faker->email;
+        }
+        $updatedUsers = $this->repository->createOrUpdateMultipleFromArray($usersUpdatedArray);
+        foreach ($updatedUsers as $key => $updatedUser) {
+            $this->assertEquals($updatedUser->name, $originalUsers->get($key)->name);
+            $this->assertNotEquals($updatedUser->email, $originalUsers->get($key)->email);
+            $this->assertEquals($updatedUser->email, $usersUpdatedArray[$key]['email']);
+            $this->assertEquals($updatedUser->password, $originalUsers->get($key)->password);
         }
     }
 
@@ -43,12 +59,30 @@ class TableListColumnTest extends BaseRepositoryTestCase
         ];
         $request = Request::create('test', 'GET', $data);
         $this->repository->setRequest($request);
-        $users = $this->repository->createMultipleFromRequest();
+        $users = $this->repository->createOrUpdateMultipleFromRequest();
         $this->assertCount(count($data), $users);
         foreach ($data as $key => $user) {
             $this->assertEquals($data[$key]['name'], $users->get($key)->name);
             $this->assertEquals($data[$key]['email'], $users->get($key)->email);
             $this->assertEquals($data[$key]['password'], $users->get($key)->password);
+        }
+    }
+
+    public function testUpdateMultipleFromRequest()
+    {
+        $originalUsers = $this->createMultipleUsers(3);
+        $usersUpdatedArray = $originalUsers->toArray();
+        foreach ($usersUpdatedArray as $key => $user) {
+            $usersUpdatedArray[$key]['email'] = $this->faker->email;
+        }
+        $request = Request::create('test', 'GET', $usersUpdatedArray);
+        $this->repository->setRequest($request);
+        $updatedUsers = $this->repository->createOrUpdateMultipleFromRequest();
+        foreach ($updatedUsers as $key => $updatedUser) {
+            $this->assertEquals($updatedUser->name, $originalUsers->get($key)->name);
+            $this->assertNotEquals($updatedUser->email, $originalUsers->get($key)->email);
+            $this->assertEquals($updatedUser->email, $usersUpdatedArray[$key]['email']);
+            $this->assertEquals($updatedUser->password, $originalUsers->get($key)->password);
         }
     }
 
@@ -63,7 +97,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
         ];
         $request = Request::create('test', 'GET', $data);
         $this->repository->setRequest($request);
-        $users = $this->repository->createMultipleFromRequest([
+        $users = $this->repository->createOrUpdateMultipleFromRequest([
             '1',
             '2',
         ], [

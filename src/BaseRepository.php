@@ -71,12 +71,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
+    public function createOrUpdateMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
     {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
 
-        return $this->createMultipleFromArray($this->request->all());
+        return $this->createOrUpdateMultipleFromArray($this->request->all());
     }
 
     /**
@@ -113,17 +113,18 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     /**
      * Create one or more model instances from data array.
+     * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createMultipleFromArray(array $data)
+    public function createOrUpdateMultipleFromArray(array $data)
     {
         $models = new Collection();
         foreach ($data as $instanceData) {
-            $models->push($this->getModel()->create($instanceData));
+            $models->push($this->createOrUpdateFromArray($instanceData));
         }
 
         return $models;
