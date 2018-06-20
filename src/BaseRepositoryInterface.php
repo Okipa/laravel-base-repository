@@ -2,13 +2,22 @@
 
 namespace Okipa\LaravelBaseRepository;
 
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface BaseRepositoryInterface
 {
+    /**
+     * Set the repository model class to instantiate.
+     *
+     * @param string $modelClass
+     *
+     * @return \Okipa\LaravelBaseRepository\BaseRepository
+     */
+    public function setModel(string $modelClass): BaseRepository;
+
     /**
      * Set the repository request to use.
      *

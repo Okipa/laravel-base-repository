@@ -186,7 +186,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return \Okipa\LaravelBaseRepository\BaseRepository
      */
-    protected function setModel(string $modelClass): BaseRepository
+    public function setModel(string $modelClass): BaseRepository
     {
         $this->model = app($modelClass);
 

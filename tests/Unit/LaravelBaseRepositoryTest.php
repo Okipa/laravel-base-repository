@@ -211,6 +211,21 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->repository->deleteByPrimary(1);
     }
 
+    public function testDeleteAnotherModelByPrimary()
+    {
+        $user = $this->createUniqueUser();
+        $company = $this->createUniqueCompany();
+        $user->remember_token = null;
+        $company->_token = null;
+        $company->_method = null;
+        $this->assertEquals([$user->toArray()], app(User::class)->all()->toArray());
+        $this->assertEquals([$company->toArray()], app(Company::class)->all()->toArray());
+        $this->repository->setModel(Company::class);
+        $this->repository->deleteByPrimary($company->id);
+        $this->assertEquals([$user->toArray()], app(User::class)->all()->toArray());
+        $this->assertEmpty(app(Company::class)->all());
+    }
+
     public function testDeleteMultipleFromPrimaries()
     {
         $users = $this->createMultipleUsers(5);
@@ -360,7 +375,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $data = $this->generateFakeUserData();
         $repository->make($data);
     }
-    
+
     public function testModelUniqueInstanceWithStoredInstance()
     {
         $storedUser = $this->createUniqueUser();
@@ -368,11 +383,10 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $user = app(UserRepository::class)->modelUniqueInstance();
         $this->assertEquals($storedUser->toArray(), $user->toArray());
     }
-    
+
     public function testModelUniqueInstanceWithNoStoredInstance()
     {
         $user = app(UserRepository::class)->modelUniqueInstance();
         $this->assertInstanceOf(Model::class, $user);
     }
-    
 }
