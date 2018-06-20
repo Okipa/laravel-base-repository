@@ -53,7 +53,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return \Okipa\LaravelBaseRepository\BaseRepository
      */
-    public function setRequest(Request $request)
+    public function setRequest(Request $request): BaseRepository
     {
         $this->request = $request;
 
@@ -71,8 +71,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createOrUpdateMultipleFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
-    {
+    public function createOrUpdateMultipleFromRequest(
+        array $attributesToExcept = [],
+        array $attributesToAddOrReplace = []
+    ): Collection {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
 
@@ -120,7 +122,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createOrUpdateMultipleFromArray(array $data)
+    public function createOrUpdateMultipleFromArray(array $data): Collection
     {
         $models = new Collection();
         foreach ($data as $instanceData) {
@@ -128,55 +130,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         return $models;
-    }
-
-    /**
-     * Get the repository model.
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    protected function getModel()
-    {
-        if ($this->model instanceof Model) {
-            return $this->model;
-        }
-        throw new ModelNotFoundException(
-            'You must declare your repository $model attribute with an Illuminate\Database\Eloquent\Model namespace to use this feature.'
-        );
-    }
-
-    /**
-     * Set the repository model class to instantiate.
-     *
-     * @param string $modelClass
-     *
-     * @return \Okipa\LaravelBaseRepository\BaseRepository
-     */
-    public function setModel(string $modelClass)
-    {
-        $this->model = app($modelClass);
-
-        return $this;
-    }
-
-    /**
-     * Create or update a model instance from the request data.
-     * The use of this method suppose that your request is correctly formatted.
-     * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
-     *
-     * @param array $attributesToExcept       (dot notation accepted)
-     * @param array $attributesToAddOrReplace (dot notation accepted)
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    public function createOrUpdateFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
-    {
-        $this->exceptAttributesFromRequest($attributesToExcept);
-        $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
-
-        return $this->createOrUpdateFromArray($this->request->all());
     }
 
     /**
@@ -188,7 +141,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createOrUpdateFromArray(array $data)
+    public function createOrUpdateFromArray(array $data): Model
     {
         $primary = $this->getModelPrimaryFromArray($data);
 
@@ -211,6 +164,36 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
+     * Get the repository model.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    protected function getModel(): Model
+    {
+        if ($this->model instanceof Model) {
+            return $this->model;
+        }
+        throw new ModelNotFoundException(
+            'You must declare your repository $model attribute with an Illuminate\Database\Eloquent\Model namespace to use this feature.'
+        );
+    }
+
+    /**
+     * Set the repository model class to instantiate.
+     *
+     * @param string $modelClass
+     *
+     * @return \Okipa\LaravelBaseRepository\BaseRepository
+     */
+    protected function setModel(string $modelClass): BaseRepository
+    {
+        $this->model = app($modelClass);
+
+        return $this;
+    }
+
+    /**
      * Update a model instance from its primary key.
      *
      * @param int   $instancePrimary
@@ -219,12 +202,33 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function updateByPrimary(int $instancePrimary, array $data)
+    public function updateByPrimary(int $instancePrimary, array $data): Model
     {
         $instance = $this->getModel()->findOrFail($instancePrimary);
         $instance->update($data);
 
         return $instance->fresh();
+    }
+
+    /**
+     * Create or update a model instance from the request data.
+     * The use of this method suppose that your request is correctly formatted.
+     * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
+     *
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param array $attributesToAddOrReplace (dot notation accepted)
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function createOrUpdateFromRequest(
+        array $attributesToExcept = [],
+        array $attributesToAddOrReplace = []
+    ): Model {
+        $this->exceptAttributesFromRequest($attributesToExcept);
+        $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
+
+        return $this->createOrUpdateFromArray($this->request->all());
     }
 
     /**
@@ -252,7 +256,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return bool
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteFromArray(array $data)
+    public function deleteFromArray(array $data): bool
     {
         $primary = $this->getModelPrimaryFromArray($data);
 
@@ -280,7 +284,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return int
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteMultipleFromPrimaries(array $instancePrimaries)
+    public function deleteMultipleFromPrimaries(array $instancePrimaries): int
     {
         return $this->getModel()->destroy($instancePrimaries);
     }
@@ -293,7 +297,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function paginateArrayResults(array $data, int $perPage = 20)
+    public function paginateArrayResults(array $data, int $perPage = 20): LengthAwarePaginator
     {
         $page = $this->request->input('page', 1);
         $offset = ($page * $perPage) - $perPage;
@@ -350,7 +354,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findMultipleFromArray(array $data)
+    public function findMultipleFromArray(array $data): Collection
     {
         return $this->getModel()->where($data)->get();
     }
@@ -365,7 +369,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc')
+    public function getAll($columns = ['*'], string $orderBy = 'default', string $orderByDirection = 'asc'): Collection
     {
         $orderBy = $orderBy === 'default' ? $this->getModel()->getKeyName() : $orderBy;
 
@@ -380,8 +384,23 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function make(array $data)
+    public function make(array $data): Model
     {
         return app($this->getModel()->getMorphClass())->fill($data);
+    }
+
+    /**
+     * Get the model unique storage instance or create one.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function modelUniqueInstance(): Model
+    {
+        $modelInstance = $this->getModel()->first();
+        if (! $modelInstance) {
+            $modelInstance = $this->getModel()->create([]);
+        }
+
+        return $modelInstance;
     }
 }
