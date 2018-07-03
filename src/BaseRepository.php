@@ -214,7 +214,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $data = $missingFillableAttributesToNull ? $this->setMissingFillableAttributesToNull($data) : $data;
         $instance->update($data);
 
-        return $instance->fresh();
+        return $instance;
     }
 
     /**
