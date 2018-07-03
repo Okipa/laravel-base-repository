@@ -65,20 +65,21 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
-     * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateMultipleFromRequest(
+        array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        array $attributesToAddOrReplace = []
+        bool $formatDataFromFillables = true
     ): Collection {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
 
-        return $this->createOrUpdateMultipleFromArray($this->request->all());
+        return $this->createOrUpdateMultipleFromArray($this->request->all(), $formatDataFromFillables);
     }
 
     /**
@@ -118,15 +119,15 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createOrUpdateMultipleFromArray(array $data): Collection
+    public function createOrUpdateMultipleFromArray(array $data, bool $formatDataFromFillables = true): Collection
     {
         $models = new Collection();
         foreach ($data as $instanceData) {
-            $models->push($this->createOrUpdateFromArray($instanceData));
+            $models->push($this->createOrUpdateFromArray($instanceData, $formatDataFromFillables));
         }
 
         return $models;
@@ -137,16 +138,16 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createOrUpdateFromArray(array $data): Model
+    public function createOrUpdateFromArray(array $data, bool $formatDataFromFillables = true): Model
     {
         $primary = $this->getModelPrimaryFromArray($data);
 
         return $primary
-            ? $this->updateByPrimary($primary, $data)
+            ? $this->updateByPrimary($primary, $data, $formatDataFromFillables)
             : $this->getModel()->create($data);
     }
 
@@ -194,18 +195,36 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
+     * Format the given data according to the model fillable fields.
+     * 
+     * @param array $data
+     *
+     * @return array
+     */
+    public function formatDataFromFillables(array $data): array
+    {
+        $fillableAttributes = $this->getModel()->getFillable();
+        $formattedData = [];
+        foreach ($fillableAttributes as $fillableAttribute){
+            $formattedData[$fillableAttribute] = !empty($data[$fillableAttribute]) ? $data[$fillableAttribute] : null;
+        }
+        return $formattedData;
+    }
+
+    /**
      * Update a model instance from its primary key.
      *
      * @param int   $instancePrimary
      * @param array $data
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function updateByPrimary(int $instancePrimary, array $data): Model
+    public function updateByPrimary(int $instancePrimary, array $data, bool $formatDataFromFillables = true): Model
     {
         $instance = $this->getModel()->findOrFail($instancePrimary);
-        $instance->update($data);
+        $formattedData = $formatDataFromFillables ? $this->formatDataFromFillables($data) : $data;
+        $instance->update($formattedData);
 
         return $instance->fresh();
     }
@@ -215,32 +234,33 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
-     * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateFromRequest(
+        array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        array $attributesToAddOrReplace = []
+        bool $formatDataFromFillables = true
     ): Model {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
 
-        return $this->createOrUpdateFromArray($this->request->all());
+        return $this->createOrUpdateFromArray($this->request->all(), $formatDataFromFillables);
     }
 
     /**
      * Delete a model instance from the request data.
      *
-     * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
+     * @param array $attributesToExcept       (dot notation accepted)
      *
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = [])
+    public function deleteFromRequest(array $attributesToAddOrReplace = [], array $attributesToExcept = [])
     {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);

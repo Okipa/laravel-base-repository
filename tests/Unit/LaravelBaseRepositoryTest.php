@@ -36,20 +36,64 @@ class TableListColumnTest extends BaseRepositoryTestCase
         }
     }
 
-    public function testUpdateMultipleFromArray()
+    public function testUpdateMultipleFromArrayWithoutFormattingFromFillables()
     {
         $originalUsers = $this->createMultipleUsers(3);
         $usersUpdatedArray = $originalUsers->toArray();
         foreach ($usersUpdatedArray as $key => $user) {
+            unset($usersUpdatedArray[$key]['name']);
             $usersUpdatedArray[$key]['email'] = $this->faker->email;
         }
-        $updatedUsers = $this->repository->createOrUpdateMultipleFromArray($usersUpdatedArray);
+        $updatedUsers = $this->repository->createOrUpdateMultipleFromArray($usersUpdatedArray, false);
         foreach ($updatedUsers as $key => $updatedUser) {
             $this->assertEquals($updatedUser->name, $originalUsers->get($key)->name);
             $this->assertNotEquals($updatedUser->email, $originalUsers->get($key)->email);
             $this->assertEquals($updatedUser->email, $usersUpdatedArray[$key]['email']);
             $this->assertEquals($updatedUser->password, $originalUsers->get($key)->password);
         }
+    }
+
+    public function testUpdateMultipleFromArrayWithFormattingFromFillables()
+    {
+        $originalUsers = $this->createMultipleUsers(3);
+        $usersUpdatedArray = $originalUsers->toArray();
+        foreach ($usersUpdatedArray as $key => $user) {
+            unset($usersUpdatedArray[$key]['name']);
+            $usersUpdatedArray[$key]['email'] = $this->faker->email;
+        }
+        $updatedUsers = $this->repository->createOrUpdateMultipleFromArray($usersUpdatedArray);
+        foreach ($updatedUsers as $key => $updatedUser) {
+            $this->assertNull($updatedUser->name);
+            $this->assertNotEquals($updatedUser->email, $originalUsers->get($key)->email);
+            $this->assertEquals($updatedUser->email, $usersUpdatedArray[$key]['email']);
+            $this->assertEquals($updatedUser->password, $originalUsers->get($key)->password);
+        }
+    }
+
+    public function testUpdateSingleFromArrayWithoutFormattingFromFillables()
+    {
+        $originalUser = $this->createUniqueUser();
+        $userUpdatedArray = $originalUser->toArray();
+        unset($userUpdatedArray['name']);
+        $userUpdatedArray['email'] = $this->faker->email;
+        $updatedUser = $this->repository->createOrUpdateFromArray($userUpdatedArray, false);
+        $this->assertEquals($updatedUser->name, $originalUser->name);
+        $this->assertNotEquals($updatedUser->email, $originalUser->email);
+        $this->assertEquals($updatedUser->email, $userUpdatedArray['email']);
+        $this->assertEquals($updatedUser->password, $originalUser->password);
+    }
+
+    public function testUpdateSingleFromArrayWithFormattingFromFillables()
+    {
+        $originalUser = $this->createUniqueUser();
+        $userUpdatedArray = $originalUser->toArray();
+        unset($userUpdatedArray['name']);
+        $userUpdatedArray['email'] = $this->faker->email;
+        $updatedUser = $this->repository->createOrUpdateFromArray($userUpdatedArray);
+        $this->assertNull($updatedUser->name);
+        $this->assertNotEquals($updatedUser->email, $originalUser->email);
+        $this->assertEquals($updatedUser->email, $userUpdatedArray['email']);
+        $this->assertEquals($updatedUser->password, $originalUser->password);
     }
 
     public function testCreateMultipleFromRequest()
@@ -70,18 +114,38 @@ class TableListColumnTest extends BaseRepositoryTestCase
         }
     }
 
-    public function testUpdateMultipleFromRequest()
+    public function testUpdateMultipleFromRequestWithoutFormattingFromFillables()
     {
         $originalUsers = $this->createMultipleUsers(3);
         $usersUpdatedArray = $originalUsers->toArray();
         foreach ($usersUpdatedArray as $key => $user) {
+            unset($usersUpdatedArray[$key]['name']);
+            $usersUpdatedArray[$key]['email'] = $this->faker->email;
+        }
+        $request = Request::create('test', 'GET', $usersUpdatedArray);
+        $this->repository->setRequest($request);
+        $updatedUsers = $this->repository->createOrUpdateMultipleFromRequest([], [], false);
+        foreach ($updatedUsers as $key => $updatedUser) {
+            $this->assertEquals($updatedUser->name, $originalUsers->get($key)->name);
+            $this->assertNotEquals($updatedUser->email, $originalUsers->get($key)->email);
+            $this->assertEquals($updatedUser->email, $usersUpdatedArray[$key]['email']);
+            $this->assertEquals($updatedUser->password, $originalUsers->get($key)->password);
+        }
+    }
+
+    public function testUpdateMultipleFromRequestWithFormattingFromFillables()
+    {
+        $originalUsers = $this->createMultipleUsers(3);
+        $usersUpdatedArray = $originalUsers->toArray();
+        foreach ($usersUpdatedArray as $key => $user) {
+            unset($usersUpdatedArray[$key]['name']);
             $usersUpdatedArray[$key]['email'] = $this->faker->email;
         }
         $request = Request::create('test', 'GET', $usersUpdatedArray);
         $this->repository->setRequest($request);
         $updatedUsers = $this->repository->createOrUpdateMultipleFromRequest();
         foreach ($updatedUsers as $key => $updatedUser) {
-            $this->assertEquals($updatedUser->name, $originalUsers->get($key)->name);
+            $this->assertNull($updatedUser->name);
             $this->assertNotEquals($updatedUser->email, $originalUsers->get($key)->email);
             $this->assertEquals($updatedUser->email, $usersUpdatedArray[$key]['email']);
             $this->assertEquals($updatedUser->password, $originalUsers->get($key)->password);
@@ -100,11 +164,11 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $request = Request::create('test', 'GET', $data);
         $this->repository->setRequest($request);
         $users = $this->repository->createOrUpdateMultipleFromRequest([
-            '1',
-            '2',
-        ], [
             '0.name'           => 'Michel',
             '0.remember_token' => 'token',
+        ], [
+            '1',
+            '2',
         ]);
         $this->assertCount(1, $users);
         $this->assertEquals('Michel', $users->get(0)->name);
@@ -124,16 +188,34 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->assertEquals($data['password'], $user->password);
     }
 
-    public function testUpdateSingleFromRequest()
+    public function testUpdateSingleFromRequestWithoutFormattingFromFillables()
     {
         $user = $this->createUniqueUser();
         $user->name = 'Jean';
         $user->remember_token = 'token';
-        $request = Request::create('test', 'GET', $user->toArray());
+        $data = $user->toArray();
+        unset($data['email']);
+        $request = Request::create('test', 'GET', $data);
+        $this->repository->setRequest($request);
+        $updatedUser = $this->repository->createOrUpdateFromRequest([], [], false);
+        $this->assertEquals('Jean', $updatedUser->name);
+        $this->assertEquals($user->email, $updatedUser->email);
+        $this->assertEquals($user->password, $updatedUser->password);
+        $this->assertEquals('token', $updatedUser->remember_token);
+    }
+
+    public function testUpdateSingleFromRequestWithFormattingFromFillables()
+    {
+        $user = $this->createUniqueUser();
+        $user->name = 'Jean';
+        $user->remember_token = 'token';
+        $data = $user->toArray();
+        unset($data['email']);
+        $request = Request::create('test', 'GET', $data);
         $this->repository->setRequest($request);
         $updatedUser = $this->repository->createOrUpdateFromRequest();
         $this->assertEquals('Jean', $updatedUser->name);
-        $this->assertEquals($user->email, $updatedUser->email);
+        $this->assertNull($updatedUser->email);
         $this->assertEquals($user->password, $updatedUser->password);
         $this->assertEquals('token', $updatedUser->remember_token);
     }
@@ -149,18 +231,29 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->assertEmpty(app(User::class)->all());
     }
 
-    public function testUpdateByPrimary()
+    public function testUpdateByPrimaryWithoutFormattingFromFillables()
     {
         $user = $this->createUniqueUser();
-        $user->name = 'Jean';
-        $user->remember_token = 'token';
+        $updatedUser = $this->repository->updateByPrimary($user->id, [
+            'name'           => 'Jean',
+            'remember_token' => 'token',
+        ], false);
+        $this->assertEquals('Jean', $updatedUser->name);
+        $this->assertEquals($user->email, $updatedUser->email);
+        $this->assertEquals($user->password, $updatedUser->password);
+        $this->assertEquals('token', $updatedUser->remember_token);
+    }
+
+    public function testUpdateByPrimaryWithFormattingFromFillables()
+    {
+        $user = $this->createUniqueUser();
         $updatedUser = $this->repository->updateByPrimary($user->id, [
             'name'           => 'Jean',
             'remember_token' => 'token',
         ]);
         $this->assertEquals('Jean', $updatedUser->name);
-        $this->assertEquals($user->email, $updatedUser->email);
-        $this->assertEquals($user->password, $updatedUser->password);
+        $this->assertEquals(null, $updatedUser->email);
+        $this->assertEquals(null, $updatedUser->password);
         $this->assertEquals('token', $updatedUser->remember_token);
     }
 
@@ -369,7 +462,7 @@ class TableListColumnTest extends BaseRepositoryTestCase
      * @expectedExceptionMessage You must declare your repository $model attribute with an
      *                           Illuminate\Database\Eloquent\Model namespace to use this feature.
      */
-    public function testRepositoryInstanciationWithNoModel()
+    public function testRepositoryInstantiationWithNoModel()
     {
         $repository = app(UserRepositoryWithNoModel::class);
         $data = $this->generateFakeUserData();

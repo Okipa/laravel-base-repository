@@ -32,15 +32,16 @@ interface BaseRepositoryInterface
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
-     * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateMultipleFromRequest(
+        array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        array $attributesToAddOrReplace = []
+        bool $formatDataFromFillables = true
     ): Collection;
 
     /**
@@ -48,60 +49,61 @@ interface BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createOrUpdateMultipleFromArray(array $data): Collection;
+    public function createOrUpdateMultipleFromArray(array $data, bool $formatDataFromFillables = true): Collection;
 
     /**
      * Create or update a model instance from data array.
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function createOrUpdateFromArray(array $data): Model;
+    public function createOrUpdateFromArray(array $data, bool $formatDataFromFillables = true): Model;
 
     /**
      * Update a model instance from its primary key.
      *
      * @param int   $instancePrimary
      * @param array $data
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function updateByPrimary(int $instancePrimary, array $data): Model;
+    public function updateByPrimary(int $instancePrimary, array $data, bool $formatDataFromFillables = true): Model;
 
     /**
      * Create or update a model instance from the request data.
      * The use of this method suppose that your request is correctly formatted.
      * If not, you can use the $exceptFromSaving and $addToSaving attributes to do so.
      *
-     * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
+     * @param array $attributesToExcept       (dot notation accepted)
+     * @param bool  $formatDataFromFillables
      *
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function createOrUpdateFromRequest(
+        array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        array $attributesToAddOrReplace = []
+        bool $formatDataFromFillables = true
     ): Model;
 
     /**
      * Delete a model instance from the request data.
      *
-     * @param array $attributesToExcept       (dot notation accepted)
      * @param array $attributesToAddOrReplace (dot notation accepted)
+     * @param array $attributesToExcept       (dot notation accepted)
      *
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteFromRequest(array $attributesToExcept = [], array $attributesToAddOrReplace = []);
+    public function deleteFromRequest(array $attributesToAddOrReplace = [], array $attributesToExcept = []);
 
     /**
      * Delete a model instance from a data array.
@@ -203,4 +205,14 @@ interface BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function modelUniqueInstance(): Model;
+
+    /**
+     * Format the given data according to the model fillable fields.
+     * Fill the non given data with a null value.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    public function formatDataFromFillables(array $data): array;
 }
