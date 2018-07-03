@@ -123,8 +123,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function createOrUpdateMultipleFromArray(array $data, bool $missingFillableAttributesToNull = true): Collection
-    {
+    public function createOrUpdateMultipleFromArray(
+        array $data,
+        bool $missingFillableAttributesToNull = true
+    ): Collection {
         $models = new Collection();
         foreach ($data as $instanceData) {
             $models->push($this->createOrUpdateFromArray($instanceData, $missingFillableAttributesToNull));
@@ -195,23 +197,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Add the missing model fillable attributes with a null value.
-     * 
-     * @param array $data
-     *
-     * @return array
-     */
-    public function setMissingFillableAttributesToNull(array $data): array
-    {
-        $fillableAttributes = $this->getModel()->getFillable();
-        $dataWithMissingAttributesToNull = [];
-        foreach ($fillableAttributes as $fillableAttribute){
-            $dataWithMissingAttributesToNull[$fillableAttribute] = !empty($data[$fillableAttribute]) ? $data[$fillableAttribute] : null;
-        }
-        return $dataWithMissingAttributesToNull;
-    }
-
-    /**
      * Update a model instance from its primary key.
      *
      * @param int   $instancePrimary
@@ -220,13 +205,35 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function updateByPrimary(int $instancePrimary, array $data, bool $missingFillableAttributesToNull = true): Model
-    {
+    public function updateByPrimary(
+        int $instancePrimary,
+        array $data,
+        bool $missingFillableAttributesToNull = true
+    ): Model {
         $instance = $this->getModel()->findOrFail($instancePrimary);
         $data = $missingFillableAttributesToNull ? $this->setMissingFillableAttributesToNull($data) : $data;
         $instance->update($data);
 
         return $instance->fresh();
+    }
+
+    /**
+     * Add the missing model fillable attributes with a null value.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    public function setMissingFillableAttributesToNull(array $data): array
+    {
+        $fillableAttributes = $this->getModel()->getFillable();
+        $dataWithMissingAttributesToNull = [];
+        foreach ($fillableAttributes as $fillableAttribute) {
+            $dataWithMissingAttributesToNull[$fillableAttribute] =
+                ! empty($data[$fillableAttribute]) ? $data[$fillableAttribute] : null;
+        }
+
+        return $dataWithMissingAttributesToNull;
     }
 
     /**

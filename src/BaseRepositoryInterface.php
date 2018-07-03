@@ -53,7 +53,10 @@ interface BaseRepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function createOrUpdateMultipleFromArray(array $data, bool $missingFillableAttributesToNull = true): Collection;
+    public function createOrUpdateMultipleFromArray(
+        array $data,
+        bool $missingFillableAttributesToNull = true
+    ): Collection;
 
     /**
      * Create or update a model instance from data array.
@@ -75,7 +78,11 @@ interface BaseRepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function updateByPrimary(int $instancePrimary, array $data, bool $missingFillableAttributesToNull = true): Model;
+    public function updateByPrimary(
+        int $instancePrimary,
+        array $data,
+        bool $missingFillableAttributesToNull = true
+    ): Model;
 
     /**
      * Create or update a model instance from the request data.
@@ -207,12 +214,11 @@ interface BaseRepositoryInterface
     public function modelUniqueInstance(): Model;
 
     /**
-     * Format the given data according to the model fillable fields.
-     * Fill the non given data with a null value.
+     * Add the missing model fillable attributes with a null value.
      *
      * @param array $data
      *
      * @return array
      */
-    public function missingFillableAttributesToNull(array $data): array;
+    public function setMissingFillableAttributesToNull(array $data): array;
 }
