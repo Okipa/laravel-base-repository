@@ -67,19 +67,19 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool  $formatDataFromFillables
+     * @param bool  $missingFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function createOrUpdateMultipleFromRequest(
         array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        bool $formatDataFromFillables = true
+        bool $missingFillableAttributesToNull = true
     ): Collection {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
 
-        return $this->createOrUpdateMultipleFromArray($this->request->all(), $formatDataFromFillables);
+        return $this->createOrUpdateMultipleFromArray($this->request->all(), $missingFillableAttributesToNull);
     }
 
     /**
@@ -119,15 +119,15 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool  $formatDataFromFillables
+     * @param bool  $missingFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function createOrUpdateMultipleFromArray(array $data, bool $formatDataFromFillables = true): Collection
+    public function createOrUpdateMultipleFromArray(array $data, bool $missingFillableAttributesToNull = true): Collection
     {
         $models = new Collection();
         foreach ($data as $instanceData) {
-            $models->push($this->createOrUpdateFromArray($instanceData, $formatDataFromFillables));
+            $models->push($this->createOrUpdateFromArray($instanceData, $missingFillableAttributesToNull));
         }
 
         return $models;
@@ -138,16 +138,16 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool  $formatDataFromFillables
+     * @param bool  $missingFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function createOrUpdateFromArray(array $data, bool $formatDataFromFillables = true): Model
+    public function createOrUpdateFromArray(array $data, bool $missingFillableAttributesToNull = true): Model
     {
         $primary = $this->getModelPrimaryFromArray($data);
 
         return $primary
-            ? $this->updateByPrimary($primary, $data, $formatDataFromFillables)
+            ? $this->updateByPrimary($primary, $data, $missingFillableAttributesToNull)
             : $this->getModel()->create($data);
     }
 
@@ -195,20 +195,20 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Format the given data according to the model fillable fields.
+     * Add the missing model fillable attributes with a null value.
      * 
      * @param array $data
      *
      * @return array
      */
-    public function formatDataFromFillables(array $data): array
+    public function setMissingFillableAttributesToNull(array $data): array
     {
         $fillableAttributes = $this->getModel()->getFillable();
-        $formattedData = [];
+        $dataWithMissingAttributesToNull = [];
         foreach ($fillableAttributes as $fillableAttribute){
-            $formattedData[$fillableAttribute] = !empty($data[$fillableAttribute]) ? $data[$fillableAttribute] : null;
+            $dataWithMissingAttributesToNull[$fillableAttribute] = !empty($data[$fillableAttribute]) ? $data[$fillableAttribute] : null;
         }
-        return $formattedData;
+        return $dataWithMissingAttributesToNull;
     }
 
     /**
@@ -216,15 +216,15 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param int   $instancePrimary
      * @param array $data
-     * @param bool  $formatDataFromFillables
+     * @param bool  $missingFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function updateByPrimary(int $instancePrimary, array $data, bool $formatDataFromFillables = true): Model
+    public function updateByPrimary(int $instancePrimary, array $data, bool $missingFillableAttributesToNull = true): Model
     {
         $instance = $this->getModel()->findOrFail($instancePrimary);
-        $formattedData = $formatDataFromFillables ? $this->formatDataFromFillables($data) : $data;
-        $instance->update($formattedData);
+        $data = $missingFillableAttributesToNull ? $this->setMissingFillableAttributesToNull($data) : $data;
+        $instance->update($data);
 
         return $instance->fresh();
     }
@@ -236,19 +236,19 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool  $formatDataFromFillables
+     * @param bool  $missingFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function createOrUpdateFromRequest(
         array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        bool $formatDataFromFillables = true
+        bool $missingFillableAttributesToNull = true
     ): Model {
         $this->exceptAttributesFromRequest($attributesToExcept);
         $this->addOrReplaceAttributesInRequest($attributesToAddOrReplace);
 
-        return $this->createOrUpdateFromArray($this->request->all(), $formatDataFromFillables);
+        return $this->createOrUpdateFromArray($this->request->all(), $missingFillableAttributesToNull);
     }
 
     /**
