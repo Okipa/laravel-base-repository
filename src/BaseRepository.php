@@ -436,9 +436,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $ids
      *
-     * @return Model|null
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMultipleFromIds(array $ids)
+    public function findMultipleFromIds(array $ids): Collection
     {
         return $this->getModel()->findMany($ids);
     }

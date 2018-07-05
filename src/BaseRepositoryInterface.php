@@ -226,6 +226,8 @@ interface BaseRepositoryInterface
      * Find multiple model instances from an array of ids.
      *
      * @param array $ids
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMultipleFromIds(array $ids);
+    public function findMultipleFromIds(array $ids): Collection;
 }
