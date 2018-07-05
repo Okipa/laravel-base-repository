@@ -175,7 +175,7 @@ interface BaseRepositoryInterface
     public function findOneFromArray(array $data, $throwsExceptionIfNotFound = true);
 
     /**
-     * Find multiple model instance from a « where » parameters array.
+     * Find multiple model instances from a « where » parameters array.
      *
      * @param array $data
      *
@@ -221,4 +221,11 @@ interface BaseRepositoryInterface
      * @return array
      */
     public function setMissingFillableAttributesToNull(array $data): array;
+
+    /**
+     * Find multiple model instances from an array of ids.
+     *
+     * @param array $ids
+     */
+    public function findMultipleFromIds(array $ids);
 }

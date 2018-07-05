@@ -374,7 +374,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * Find multiple model instance from a « where » parameters array.
+     * Find multiple model instances from a « where » parameters array.
      *
      * @param array $data
      *
@@ -429,5 +429,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         return $modelInstance;
+    }
+
+    /**
+     * Find multiple model instances from an array of ids.
+     *
+     * @param array $ids
+     *
+     * @return Model|null
+     */
+    public function findMultipleFromIds(array $ids)
+    {
+        return $this->getModel()->findMany($ids);
     }
 }

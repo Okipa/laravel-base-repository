@@ -365,7 +365,6 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $paginatedUsersPageOne = $this->repository->paginateArrayResults($users->toArray(), 20);
         $this->assertCount(20, $paginatedUsersPageOne);
         $this->assertInstanceOf(LengthAwarePaginator::class, $paginatedUsersPageOne);
-
         $request = Request::create('test', 'GET', [
             'page' => 2,
         ]);
@@ -481,5 +480,12 @@ class TableListColumnTest extends BaseRepositoryTestCase
     {
         $user = app(UserRepository::class)->modelUniqueInstance();
         $this->assertInstanceOf(Model::class, $user);
+    }
+
+    public function testFindMultipleFromIds()
+    {
+        $users = $this->createMultipleUsers(5);
+        $foundUsers = app(UserRepository::class)->findMultipleFromIds($users->pluck('id')->toArray());
+        $this->assertEquals($foundUsers->pluck('id'), $foundUsers->pluck('id'));
     }
 }
