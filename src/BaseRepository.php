@@ -230,7 +230,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $dataWithMissingAttributesToNull = [];
         foreach ($fillableAttributes as $fillableAttribute) {
             $dataWithMissingAttributesToNull[$fillableAttribute] =
-                ! empty($data[$fillableAttribute]) ? $data[$fillableAttribute] : null;
+                isset($data[$fillableAttribute]) ? $data[$fillableAttribute] : null;
         }
 
         return $dataWithMissingAttributesToNull;

@@ -488,4 +488,20 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $foundUsers = app(UserRepository::class)->findMultipleFromIds($users->pluck('id')->toArray());
         $this->assertEquals($foundUsers->pluck('id'), $foundUsers->pluck('id'));
     }
+
+    public function testSetMissingFillableAttributesToNull()
+    {
+        $raw = [
+            'name'           => false,
+            'password'       => 'test',
+            'remember_token' => 123,
+        ];
+        $data = app(UserRepository::class)->setMissingFillableAttributesToNull($raw);
+        $this->assertEquals([
+            'name'           => false,
+            'email'          => null,
+            'password'       => 'test',
+            'remember_token' => 123,
+        ], $data);
+    }
 }
