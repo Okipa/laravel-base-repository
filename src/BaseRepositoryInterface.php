@@ -34,14 +34,14 @@ interface BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool  $missingFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function createOrUpdateMultipleFromRequest(
         array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        bool $missingFillableAttributesToNull = true
+        bool $saveMissingModelFillableAttributesToNull = true
     ): Collection;
 
     /**
@@ -49,13 +49,13 @@ interface BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool  $missingFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function createOrUpdateMultipleFromArray(
         array $data,
-        bool $missingFillableAttributesToNull = true
+        bool $saveMissingModelFillableAttributesToNull = true
     ): Collection;
 
     /**
@@ -63,25 +63,25 @@ interface BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool  $missingFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function createOrUpdateFromArray(array $data, bool $missingFillableAttributesToNull = true): Model;
+    public function createOrUpdateFromArray(array $data, bool $saveMissingModelFillableAttributesToNull = true): Model;
 
     /**
      * Update a model instance from its primary key.
      *
      * @param int   $instancePrimary
      * @param array $data
-     * @param bool  $missingFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function updateByPrimary(
         int $instancePrimary,
         array $data,
-        bool $missingFillableAttributesToNull = true
+        bool $saveMissingModelFillableAttributesToNull = true
     ): Model;
 
     /**
@@ -91,14 +91,14 @@ interface BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool  $missingFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function createOrUpdateFromRequest(
         array $attributesToAddOrReplace = [],
         array $attributesToExcept = [],
-        bool $missingFillableAttributesToNull = true
+        bool $saveMissingModelFillableAttributesToNull = true
     ): Model;
 
     /**

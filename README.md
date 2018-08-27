@@ -218,9 +218,35 @@ class UsersController extends Controller
 
 ### Properties
 
-See the protected properties to override in your own repositories in the [BaseRepository](https://github.com/Okipa/laravel-base-repository/blob/master/src/BaseRepository.php).
+See the protected properties that can be overridden in your own repositories in the [BaseRepository](https://github.com/Okipa/laravel-base-repository/blob/master/src/BaseRepository.php).
 
 ### Public methods
 
 See the available public methods in the [BaseRepositoryInterface](https://github.com/Okipa/laravel-base-repository/blob/master/src/BaseRepositoryInterface.php).
 
+------------------------------------------------------------------------------------------------------------------------
+
+## Testing
+
+```bash
+composer test
+```
+
+------------------------------------------------------------------------------------------------------------------------
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+------------------------------------------------------------------------------------------------------------------------
+
+## Contributors
+
+- [Okipa](https://github.com/Okipa)
+- [ACID-Solutions](https://github.com/ACID-Solutions)
+
+------------------------------------------------------------------------------------------------------------------------
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

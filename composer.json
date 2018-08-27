@@ -36,5 +36,8 @@
             "Okipa\\LaravelBaseRepository\\Test\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "phpunit"
+    },
     "minimum-stability": "stable"
 }
