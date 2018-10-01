@@ -67,7 +67,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool  $saveMissingModelFillableAttributesToNull
+     * @param bool $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -119,7 +119,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool  $saveMissingModelFillableAttributesToNull
+     * @param bool $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -140,7 +140,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool  $saveMissingModelFillableAttributesToNull
+     * @param bool $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -178,7 +178,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
             return $this->model;
         }
         throw new ModelNotFoundException(
-            'You must declare your repository $model attribute with an Illuminate\Database\Eloquent\Model namespace to use this feature.'
+            'You must declare your repository $model attribute with an Illuminate\Database\Eloquent\Model '
+            . 'namespace to use this feature.'
         );
     }
 
@@ -199,18 +200,18 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Update a model instance from its primary key.
      *
-     * @param int   $instancePrimary
+     * @param int $primary
      * @param array $data
-     * @param bool  $saveMissingModelFillableAttributesToNull
+     * @param bool $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function updateByPrimary(
-        int $instancePrimary,
+        int $primary,
         array $data,
         bool $saveMissingModelFillableAttributesToNull = true
     ): Model {
-        $instance = $this->getModel()->findOrFail($instancePrimary);
+        $instance = $this->getModel()->findOrFail($primary);
         $data = $saveMissingModelFillableAttributesToNull ? $this->setMissingFillableAttributesToNull($data) : $data;
         $instance->update($data);
 
@@ -243,7 +244,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool  $saveMissingModelFillableAttributesToNull
+     * @param bool $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -293,14 +294,14 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Delete a model instance from its primary key.
      *
-     * @param int $instancePrimary
+     * @param int $primary
      *
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteByPrimary(int $instancePrimary)
+    public function deleteByPrimary(int $primary)
     {
-        return $this->getModel()->findOrFail($instancePrimary)->delete();
+        return $this->getModel()->findOrFail($primary)->delete();
     }
 
     /**
@@ -320,7 +321,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * Paginate array results.
      *
      * @param array $data
-     * @param int   $perPage
+     * @param int $perPage
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
@@ -344,24 +345,24 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Find one model instance from its primary key value.
      *
-     * @param int  $instancePrimary
+     * @param int $primary
      * @param bool $throwsExceptionIfNotFound
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true)
+    public function findOneByPrimary(int $primary, $throwsExceptionIfNotFound = true)
     {
         return $throwsExceptionIfNotFound
-            ? $this->getModel()->findOrFail($instancePrimary)
-            : $this->getModel()->find($instancePrimary);
+            ? $this->getModel()->findOrFail($primary)
+            : $this->getModel()->find($primary);
     }
 
     /**
      * Find one model instance from an associative array.
      *
      * @param array $data
-     * @param bool  $throwsExceptionIfNotFound
+     * @param bool $throwsExceptionIfNotFound
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
@@ -389,7 +390,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Get all model instances from database.
      *
-     * @param array  $columns
+     * @param array $columns
      * @param string $orderBy
      * @param string $orderByDirection
      *
@@ -434,12 +435,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Find multiple model instances from an array of ids.
      *
-     * @param array $ids
+     * @param array $primaries
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMultipleFromIds(array $ids): Collection
+    public function findMultipleFromPrimaries(array $primaries): Collection
     {
-        return $this->getModel()->findMany($ids);
+        return $this->getModel()->findMany($primaries);
     }
 }

@@ -72,14 +72,14 @@ interface BaseRepositoryInterface
     /**
      * Update a model instance from its primary key.
      *
-     * @param int   $instancePrimary
+     * @param int   $primary
      * @param array $data
      * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function updateByPrimary(
-        int $instancePrimary,
+        int $primary,
         array $data,
         bool $saveMissingModelFillableAttributesToNull = true
     ): Model;
@@ -125,12 +125,12 @@ interface BaseRepositoryInterface
     /**
      * Delete a model instance from its primary key.
      *
-     * @param int $instancePrimary
+     * @param int $primary
      *
      * @return bool|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function deleteByPrimary(int $instancePrimary);
+    public function deleteByPrimary(int $primary);
 
     /**
      * Delete multiple model instances from their primary keys.
@@ -155,13 +155,13 @@ interface BaseRepositoryInterface
     /**
      * Find one model instance from its primary key value.
      *
-     * @param int  $instancePrimary
+     * @param int  $primary
      * @param bool $throwsExceptionIfNotFound
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function findOneByPrimary(int $instancePrimary, $throwsExceptionIfNotFound = true);
+    public function findOneByPrimary(int $primary, $throwsExceptionIfNotFound = true);
 
     /**
      * Find one model instance from an associative array.
@@ -225,9 +225,9 @@ interface BaseRepositoryInterface
     /**
      * Find multiple model instances from an array of ids.
      *
-     * @param array $ids
+     * @param array $primaries
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMultipleFromIds(array $ids): Collection;
+    public function findMultipleFromPrimaries(array $primaries): Collection;
 }

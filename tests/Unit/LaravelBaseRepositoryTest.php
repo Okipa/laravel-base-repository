@@ -323,8 +323,8 @@ class TableListColumnTest extends BaseRepositoryTestCase
     {
         $users = $this->createMultipleUsers(5);
         $this->assertCount(5, $users);
-        $ids = $users->pluck('id')->toArray();
-        $this->repository->deleteMultipleFromPrimaries($ids);
+        $primaries = $users->pluck('id')->toArray();
+        $this->repository->deleteMultipleFromPrimaries($primaries);
         $this->assertEmpty(app(User::class)->all());
     }
 
@@ -482,10 +482,10 @@ class TableListColumnTest extends BaseRepositoryTestCase
         $this->assertInstanceOf(Model::class, $user);
     }
 
-    public function testFindMultipleFromIds()
+    public function testfindMultipleFromPrimaries()
     {
         $users = $this->createMultipleUsers(5);
-        $foundUsers = app(UserRepository::class)->findMultipleFromIds($users->pluck('id')->toArray());
+        $foundUsers = app(UserRepository::class)->findMultipleFromPrimaries($users->pluck('id')->toArray());
         $this->assertEquals($foundUsers->pluck('id'), $foundUsers->pluck('id'));
     }
 
