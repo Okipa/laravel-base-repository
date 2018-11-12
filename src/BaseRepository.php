@@ -2,11 +2,11 @@
 
 namespace Okipa\LaravelBaseRepository;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
@@ -67,7 +67,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool $saveMissingModelFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -119,7 +119,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool $saveMissingModelFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -140,7 +140,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * The use of this method suppose that your array is correctly formatted.
      *
      * @param array $data
-     * @param bool $saveMissingModelFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -200,9 +200,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Update a model instance from its primary key.
      *
-     * @param int $primary
+     * @param int   $primary
      * @param array $data
-     * @param bool $saveMissingModelFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -244,7 +244,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @param array $attributesToAddOrReplace (dot notation accepted)
      * @param array $attributesToExcept       (dot notation accepted)
-     * @param bool $saveMissingModelFillableAttributesToNull
+     * @param bool  $saveMissingModelFillableAttributesToNull
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -321,7 +321,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * Paginate array results.
      *
      * @param array $data
-     * @param int $perPage
+     * @param int   $perPage
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
@@ -345,7 +345,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Find one model instance from its primary key value.
      *
-     * @param int $primary
+     * @param int  $primary
      * @param bool $throwsExceptionIfNotFound
      *
      * @return \Illuminate\Database\Eloquent\Model|null
@@ -362,7 +362,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * Find one model instance from an associative array.
      *
      * @param array $data
-     * @param bool $throwsExceptionIfNotFound
+     * @param bool  $throwsExceptionIfNotFound
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
@@ -390,7 +390,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Get all model instances from database.
      *
-     * @param array $columns
+     * @param array  $columns
      * @param string $orderBy
      * @param string $orderByDirection
      *

@@ -39,9 +39,11 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "codestyleCheck": "vendor/bin/phpcs",
-        "codestyleFix": "vendor/bin/phpcbf"
+        "test": [
+            "vendor/bin/phpcs",
+            "vendor/bin/phpcbf",
+            "phpunit"
+        ]
     },
     "minimum-stability": "stable"
 }
